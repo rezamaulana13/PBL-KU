@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('role')->default('client');
             $table->string('status')->default('1');
             $table->rememberToken();
+            $table->integer('city_id')->nullable();
             $table->timestamps();
         });
     }

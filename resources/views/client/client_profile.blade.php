@@ -83,11 +83,14 @@
                                 <div class="mb-3">
                                     <label for="example-text-input" class="form-label">Lokasi</label>
                                 <select name="city_id" class="form-select">
-                                <option>Select</option>
-                                @foreach ($city as $cit)
-                                <option value="{{ $cit->id }}" {{ $cit->id == $profileData->city_id ? 'selected' : '' }} >{{ $cit->city_name }}</option>
-                                @endforeach
-                            </select>
+                                    <option value="">-- Pilih Kota --</option>
+                                         @foreach ($city as $cit)
+                                            <option value="{{ $cit->id }}" {{ $cit->id == $profileData->city_id ? 'selected' : '' }}>
+                                            {{ $cit->city_name }}
+                                             </option>
+                                        @endforeach
+                                </select>
+
                                 </div>
                                 <div class="mb-3">
                                     <label for="example-text-input" class="form-label">Raracookies Info</label>
