@@ -22,7 +22,9 @@
                    </div>
                 </div>
              </form>
-             <p><a class="text-info" href="register.html">Register Sekarang</a> to get updates on <a href="offers.html">Promo dan Kupon</a></p>
+             <p><a class="text-info" href="register.html">Register Sekarang</a>
+            to get updates on
+            <a href="offers.html">Promo dan Kupon</a></p>
              <div class="app">
                 <p class="mb-2">DOWNLOAD APP</p>
                 <a href="#">

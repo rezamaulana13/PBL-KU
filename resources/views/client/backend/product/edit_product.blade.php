@@ -97,7 +97,7 @@
 
 <div class="col-xl-6 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Total Pembelian</label>
+        <label for="example-text-input" class="form-label">Ukuran</label>
         <input class="form-control" type="text" name="size"  id="example-text-input" value="{{ $product->size }}">
     </div>
 </div>
@@ -105,14 +105,14 @@
 
 <div class="col-xl-6 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Tanggal</label>
+        <label for="example-text-input" class="form-label">Stok Tersedia</label>
         <input class="form-control" type="text" name="qty"  id="example-text-input" value="{{ $product->qty }}">
     </div>
 </div>
 
 <div class="col-xl-6 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Product Image </label>
+        <label for="example-text-input" class="form-label">Gambar Produk</label>
         <input class="form-control" name="image" type="file"  id="image">
     </div>
 </div>
@@ -138,7 +138,7 @@
 </div>
 
 <div class="mt-4">
-    <button type="submit" class="btn btn-primary waves-effect waves-light">Save Changes</button>
+    <button type="submit" class="btn btn-primary waves-effect waves-light">Simpan</button>
 </div>
 
 </div>

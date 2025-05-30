@@ -32,11 +32,11 @@
         <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
             <thead>
             <tr>
-                <th>Sl</th>
-                <th>Image</th>
-                <th>Name</th>
+                <th>NO</th>
+                <th>Gambar</th>
+                <th>Nama</th>
                 <th>Menu</th>
-                <th>Tanggal</th>
+                <th>Stok Tersedia</th>
                 <th>Harga</th>
                 <th>Diskon</th>
                 <th>Status</th>

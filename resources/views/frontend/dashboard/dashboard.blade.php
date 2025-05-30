@@ -9,7 +9,7 @@
       <meta name="csrf-token" content="{{ csrf_token() }}" >
       <title>User Dashboard - Raracoockies Website</title>
       <!-- Favicon Icon -->
-      <link rel="icon" type="image/png" href="{{ asset('frontend/img/favicon.png') }}">
+      <link rel="icon" type="image/png" href="{{ asset('frontend/img/logorara.png') }}">
       <!-- Bootstrap core CSS-->
       <link href="{{ asset('frontend/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
       <!-- Font Awesome-->

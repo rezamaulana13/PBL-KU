@@ -21,7 +21,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
           <div class="row d-flex align-items-end">
              <div class="col-md-8">
                 <div class="restaurant-detailed-header-left">
-                   <img class="img-fluid mr-3 float-left" alt="osahan" src="{{ asset('upload/client_images/' . $client->photo ) }}">
+                   <img class="img-fluid mr-3 float-left" alt="Raracookies" src="{{ asset('upload/client_images/' . $client->photo ) }}">
                    <h2 class="text-white">{{ $client->name }}</h2>
                    <p class="text-white mb-1"><i class="icofont-location-pin"></i>{{ $client->address }} <span class="badge badge-success">OPEN</span>
                    </p>

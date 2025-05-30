@@ -34,7 +34,7 @@
 <div class="row">
     <div class="col-xl-4 col-md-6">
             <div class="form-group mb-3">
-                <label for="example-text-input" class="form-label">Category Name</label>
+                <label for="example-text-input" class="form-label">Nama Kategori</label>
                 <select name="category_id" class="form-select">
                     <option>Select</option>
                     @foreach ($category as $cat)
@@ -46,7 +46,7 @@
 
     <div class="col-xl-4 col-md-6">
         <div class="form-group mb-3">
-            <label for="example-text-input" class="form-label">Menu Name</label>
+            <label for="example-text-input" class="form-label">Nama Menu</label>
             <select name="menu_id" class="form-select">
                 <option selected="" disabled="" >Select</option>
                 @foreach ($menu as $men)
@@ -60,7 +60,7 @@
 
 <div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">City Name</label>
+        <label for="example-text-input" class="form-label">Kota</label>
         <select name="city_id" class="form-select">
             <option>Select</option>
             @foreach ($city as $cit)
@@ -73,14 +73,14 @@
 
 <div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Product Name</label>
+        <label for="example-text-input" class="form-label">Nama Produk</label>
         <input class="form-control" type="text" name="name"  id="example-text-input">
     </div>
 </div>
 
 <div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Price</label>
+        <label for="example-text-input" class="form-label">Harga</label>
         <input class="form-control" type="text" name="price"  id="example-text-input">
     </div>
 </div>
@@ -94,7 +94,7 @@
 
 <div class="col-xl-6 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Total Pembelian</label>
+        <label for="example-text-input" class="form-label">Ukuran</label>
         <input class="form-control" type="text" name="size"  id="example-text-input">
     </div>
 </div>
@@ -102,14 +102,14 @@
 
 <div class="col-xl-6 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Product QTY </label>
+        <label for="example-text-input" class="form-label">Tersedia Stok</label>
         <input class="form-control" type="text" name="qty"  id="example-text-input">
     </div>
 </div>
 
 <div class="col-xl-6 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Product Image </label>
+        <label for="example-text-input" class="form-label">Gambar Produk</label>
         <input class="form-control" name="image" type="file"  id="image">
     </div>
 </div>
@@ -135,7 +135,7 @@
 </div>
 
 <div class="mt-4">
-    <button type="submit" class="btn btn-primary waves-effect waves-light">Save Changes</button>
+    <button type="submit" class="btn btn-primary waves-effect waves-light">Simpan</button>
 </div>
 
 </div>

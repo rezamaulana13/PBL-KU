@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark osahan-nav">
     <div class="container">
-       <a class="navbar-brand" href="{{ route('index') }}"><img alt="logo" src="{{ asset('frontend/img/logo.png') }}"></a>
+       <a class="navbar-brand" href="{{ route('index') }}"><img alt="logo" src="{{ asset('frontend/img/logorara.png') }}" style="max-width: 100px; margin-left: -150px; filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.4));"></a>
        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
        <span class="navbar-toggler-icon"></span>
        </button>
@@ -71,7 +71,7 @@ Pesanan             <span class="badge badge-success">{{ count((array) session('
                    $client = $clients[$clientId];
                 @endphp
                 <div class="dropdown-cart-top-header p-4">
-                   <img class="img-fluid mr-3" alt="osahan" src="{{ asset('upload/client_images/' . $client->photo) }}">
+                   <img class="img-fluid mr-3" alt="Raracookies" src="{{ asset('upload/client_images/' . $client->photo) }}">
                    <h6 class="mb-0">{{ $client->name }}</h6>
                    <p class="text-secondary mb-0">{{ $client->address }}</p>
                 </div>
