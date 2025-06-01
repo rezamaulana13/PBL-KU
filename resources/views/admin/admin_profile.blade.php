@@ -13,7 +13,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Contacts</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Kontak</a></li>
                             <li class="breadcrumb-item active">Profile</li>
                         </ol>
                     </div>
@@ -88,11 +88,11 @@
                         <div class="col-lg-6">
                             <div class="mt-3 mt-lg-0">
                              <div class="mb-3">
-                                        <label for="example-text-input" class="form-label">Address</label>
+                                        <label for="example-text-input" class="form-label">Alamat</label>
                                         <input class="form-control" name ="address" type="text" value="{{$profileData->address}}" id="example-text-input">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="example-text-input" class="form-label">Profile Image</label>
+                                        <label for="example-text-input" class="form-label">Foto Profil</label>
                                         <input class="form-control" name ="photo" type="file" id="image">
                                     </div>
                                     <div class="mb-3">
@@ -102,7 +102,7 @@
                                         url('upload/profile.jpg')}}" alt="" class="rounded-circle p-1 bg-primary" width="110">
                                     </div>
                                     <div class="mt-4">
-                                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save Changes</button>
+                                        <button type="submit" class="btn btn-primary waves-effect waves-light">Simpan</button>
 
                                     </div>
 

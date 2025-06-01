@@ -172,8 +172,8 @@
         <div class="card-body">
             <img src="assets/images/giftbox.png" alt="">
             <div class="mt-4">
-                <h5 class="alertcard-title font-size-16">Unlimited Access</h5>
-                <p class="font-size-13">Upgrade your plan from a Free trial, to select ‘Business Plan’.</p>
+                <h5 class="alertcard-title font-size-16">Unlimited Edition</h5>
+                <p class="font-size-13">Jadilah Admin Yang Konsisten dan Aktif</p>
 
             </div>
         </div>

@@ -4,7 +4,7 @@
     <head>
 
         <meta charset="utf-8" />
-        <title>Login | Minia - Minimal Admin & Dashboard Template</title>
+        <title>Login | Raracookies | Admin Login & Dashboard </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
         <meta content="Themesbrand" name="author" />
@@ -44,8 +44,8 @@
                                     </div>
                                     <div class="auth-content my-auto">
                                         <div class="text-center">
-                                            <h5 class="mb-0">Welcome Back !</h5>
-                                            <p class="text-muted mt-2">Sign in to continue to Minia.</p>
+                                            <h5 class="mb-0">Selamat Datang!</h5>
+                                            <p class="text-muted mt-2">Raracookies Siap Membantu</p>
                                         </div>
 
                                         @if ($errors->any())
@@ -92,20 +92,20 @@
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="checkbox" id="remember-check">
                                                         <label class="form-check-label" for="remember-check">
-                                                            Remember me
+                                                            Simpan Akun
                                                         </label>
                                                     </div>
                                                 </div>
 
                                             </div>
                                             <div class="mb-3">
-                                                <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Log In</button>
+                                                <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Masuk</button>
                                             </div>
                                         </form>
 
                                         <div class="mt-4 pt-2 text-center">
                                             <div class="signin-other-title">
-                                                <h5 class="font-size-14 mb-3 text-muted fw-medium">- Sign in with -</h5>
+                                                <h5 class="font-size-14 mb-3 text-muted fw-medium">- Masuk Dengan -</h5>
                                             </div>
 
                                             <ul class="list-inline mb-0">
@@ -131,12 +131,12 @@
                                         </div>
 
                                         <div class="mt-5 text-center">
-                                            <p class="text-muted mb-0">Don't have an account ? <a href="auth-register.html"
-                                                    class="text-primary fw-semibold"> Signup now </a> </p>
+                                            <p class="text-muted mb-0">Tidak mempunyai Akun? <a href="auth-register.html"
+                                                    class="text-primary fw-semibold"> Daftar Sekarang </a> </p>
                                         </div>
                                     </div>
                                     <div class="mt-4 mt-md-5 text-center">
-                                        <p class="mb-0">© <script>document.write(new Date().getFullYear())</script> Minia   . Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
+                                        <p class="mb-0">© <script>document.write(new Date().getFullYear())</script> Raracookies.Smart<i class="mdi mdi-heart text-danger"></i>by App</p>
                                     </div>
                                 </div>
                             </div>

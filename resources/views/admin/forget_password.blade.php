@@ -35,12 +35,12 @@
                                 <div class="d-flex flex-column h-100">
                                     <div class="mb-4 mb-md-5 text-center">
                                         <a href="index.html" class="d-block auth-logo">
-                                            <img src="{{ asset('backend/assets/images/logo-sm.svg') }}" alt="" height="28"> <span class="logo-txt">Minia</span>
+                                            <img src="{{ asset('backend/assets/images/logo.jpeg') }}" alt="" height="28"> <span class="logo-txt">Raracookies</span>
                                         </a>
                                     </div>
                                     <div class="auth-content my-auto">
                                         <div class="text-center">
-                                            <h5 class="mb-0">Forget password</h5>
+                                            <h5 class="mb-0">Forgot password</h5>
                                         </div>
 
 
@@ -64,13 +64,13 @@
                                                 <input type="email" name="email" class="form-control" id="email" placeholder="Enter email">
                                             </div>
                                             <div class="mb-3">
-                                                <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Link new password</button>
+                                                <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Link Password Baru</button>
                                             </div>
                                         </form>
 
                                         <div class="mt-4 pt-2 text-center">
                                             <div class="signin-other-title">
-                                                <h5 class="font-size-14 mb-3 text-muted fw-medium">- Sign in with -</h5>
+                                                <h5 class="font-size-14 mb-3 text-muted fw-medium">- Masuk Dengan-</h5>
                                             </div>
 
                                             <ul class="list-inline mb-0">
@@ -96,12 +96,12 @@
                                         </div>
 
                                         <div class="mt-5 text-center">
-                                            <p class="text-muted mb-0">Don't have an account ? <a href="auth-register.html"
+                                            <p class="text-muted mb-0">Tidak Memiliki Akun? <a href="auth-register.html"
                                                     class="text-primary fw-semibold"> Signup now </a> </p>
                                         </div>
                                     </div>
                                     <div class="mt-4 mt-md-5 text-center">
-                                        <p class="mb-0">© <script>document.write(new Date().getFullYear())</script> UTS   . Crafted with <i class="mdi mdi-heart text-danger"></i> by Randy</p>
+                                        <p class="mb-0">© <script>document.write(new Date().getFullYear())</script> Raracookies <i class="mdi mdi-heart text-danger"></i> by Rara.in</p>
                                     </div>
                                 </div>
                             </div>
