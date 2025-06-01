@@ -79,7 +79,7 @@
                     <div class="p-3">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="m-0"> Notifications </h6>
+                                <h6 class="m-0"> Notifikasi</h6>
                             </div>
                             <div class="col-auto">
                                 <a href="#!" class="small text-reset text-decoration-underline"> Unread (3)</a>
@@ -90,13 +90,13 @@
                         <a href="#!" class="text-reset notification-item">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
-                                    <img src="assets/images/users/avatar-3.jpg" class="rounded-circle avatar-sm" alt="user-pic">
+                                    <img src="{{ asset('backend/assets/images/users/reza.jpeg') }}" class="rounded-circle avatar-sm" alt="user-pic">
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-1">James Lemire</h6>
+                                    <h6 class="mb-1">Reza Maulana Nehru</h6>
                                     <div class="font-size-13 text-muted">
                                         <p class="mb-1">It will seem like simplified English.</p>
-                                        <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span>1 hour ago</span></p>
+                                        <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span>1 jam yang lalu</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -137,7 +137,8 @@
                         <a href="#!" class="text-reset notification-item">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
-                                    <img src="assets/images/users/avatar-6.jpg" class="rounded-circle avatar-sm" alt="user-pic">
+                                    <img src="{{ asset('backend/assets/images/users/cess.jpg') }}" class="rounded-circle avatar-sm" alt="user-pic">
+
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1">Salena Layfield</h6>
