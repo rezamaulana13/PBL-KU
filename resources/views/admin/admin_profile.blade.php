@@ -9,12 +9,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Profile</h4>
+                    <h4 class="mb-sm-0 font-size-18">Profil</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="javascript: void(0);">Kontak</a></li>
-                            <li class="breadcrumb-item active">Profile</li>
+                            <li class="breadcrumb-item active">Profil</li>
                         </ol>
                     </div>
 
@@ -68,7 +68,7 @@
                         <div class="col-lg-6">
                             <div>
                                 <div class="mb-3">
-                                    <label for="example-text-input" class="form-label">Name</label>
+                                    <label for="example-text-input" class="form-label">Nama</label>
                                     <input class="form-control" type="text"  name ="name"value="{{$profileData->name}}" id="example-text-input">
                                 </div>
                                 <div class="mb-3">
@@ -76,7 +76,7 @@
                                     <input class="form-control" name ="email" type="email" value="{{$profileData->email}}" id="example-text-input">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="example-text-input" class="form-label">Phone</label>
+                                    <label for="example-text-input" class="form-label">No.Hp</label>
                                     <input class="form-control"  name ="phone"type="text" value="{{$profileData->phone}}" id="example-text-input">
                                 </div>
 

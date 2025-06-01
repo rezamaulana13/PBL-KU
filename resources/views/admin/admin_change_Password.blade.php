@@ -13,7 +13,7 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Contacts</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Kontak</a></li>
                             <li class="breadcrumb-item active">Change Password</li>
                         </ol>
                     </div>
@@ -68,7 +68,7 @@
                         <div class="col-lg-6">
                             <div>
                                 <div class="mb-3">
-                                    <label for="example-text-input" class="form-label">Old Password</label>
+                                    <label for="example-text-input" class="form-label">Password Lama</label>
                                     <input class="form-control @error('old_password')
                                     is-invalid @enderror" type="password"  name ="old_password" id="old_password">
                                     @error('old_password')
@@ -77,7 +77,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label for="example-text-input" class="form-label">New Password</label>
+                                    <label for="example-text-input" class="form-label">Password Baru</label>
                                     <input class="form-control @error('new_password')
                                     is-invalid @enderror" type="password"  name ="new_password" id="new_password">
                                     @error('new_password')
@@ -86,11 +86,11 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label for="example-text-input" class="form-label">Confirm New Password</label>
+                                    <label for="example-text-input" class="form-label">Konfirmasi Password Baru</label>
                                     <input class="form-control" type="password"  name ="new_password_confirmation" id="new_password_confirmation">
 
                                 </div>
-                                <button type="submit" class="btn btn-primary waves-effect waves-light">Save Changes</button>
+                                <button type="submit" class="btn btn-primary waves-effect waves-light">Simpan</button>
 
 
 

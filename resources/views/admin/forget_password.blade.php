@@ -97,7 +97,7 @@
 
                                         <div class="mt-5 text-center">
                                             <p class="text-muted mb-0">Tidak Memiliki Akun? <a href="auth-register.html"
-                                                    class="text-primary fw-semibold"> Signup now </a> </p>
+                                                    class="text-primary fw-semibold"> Masuk Sekarang</a> </p>
                                         </div>
                                     </div>
                                     <div class="mt-4 mt-md-5 text-center">
@@ -140,20 +140,21 @@
                                                     <div class="testi-contain text-white">
                                                         <i class="bx bxs-quote-alt-left text-success display-6"></i>
 
-                                                        <h4 class="mt-4 fw-medium lh-base text-white">“I feel confident
-                                                            imposing change
-                                                            on myself. It's a lot more progressing fun than looking back.
-                                                            That's why
-                                                            I ultricies enim
-                                                            at malesuada nibh diam on tortor neaded to throw curve balls.”
+                                                        <h4 class="mt-4 fw-medium lh-base text-white">“Rara Cookies bukan sekadar camilan,
+                                                            tapi cerita tentang keberanian mencoba rasa baru.
+                                                            Setiap gigitan adalah langkah kecil menuju kebahagiaan,
+                                                            karena hidup terlalu singkat untuk rasa yang itu-itu saja.
+                                                            Di balik renyahnya,
+                                                            tersimpan semangat untuk terus bergerak maju—
+                                                            berani manis, berani beda.”
                                                         </h4>
                                                         <div class="mt-4 pt-3 pb-5">
                                                             <div class="d-flex align-items-start">
                                                                 <div class="flex-shrink-0">
-                                                                    <img src="{{ asset('backend/assets/images/users/avatar-1.jpg') }}" class="avatar-md img-fluid rounded-circle" alt="...">
+                                                                    <img src="{{ asset('backend/assets/images/users/reza.jpeg') }}" class="avatar-md img-fluid rounded-circle" alt="...">
                                                                 </div>
                                                                 <div class="flex-grow-1 ms-3 mb-4">
-                                                                    <h5 class="font-size-18 text-white">Richard Drews
+                                                                    <h5 class="font-size-18 text-white">Reza Maulana Nehru
                                                                     </h5>
                                                                     <p class="mb-0 text-white-50">Web Designer</p>
                                                                 </div>
@@ -166,19 +167,20 @@
                                                     <div class="testi-contain text-white">
                                                         <i class="bx bxs-quote-alt-left text-success display-6"></i>
 
-                                                        <h4 class="mt-4 fw-medium lh-base text-white">“Our task must be to
-                                                            free ourselves by widening our circle of compassion to embrace
-                                                            all living
-                                                            creatures and
-                                                            the whole of quis consectetur nunc sit amet semper justo. nature
-                                                            and its beauty.”</h4>
+                                                        <h4 class="mt-4 fw-medium lh-base text-white">“Setiap adonan Rara Cookies
+                                                            dibuat dengan hati dan tujuan:
+                                                            membawa kebahagiaan kecil yang nyata.
+                                                            Karena kadang,
+                                                            yang kamu butuhkan hanyalah satu gigitan
+                                                            untuk merasa semuanya akan baik-baik saja.”
+                                                        </h4>
                                                         <div class="mt-4 pt-3 pb-5">
                                                             <div class="d-flex align-items-start">
                                                                 <div class="flex-shrink-0">
-                                                                    <img src="{{ asset('backend/assets/images/users/avatar-2.jpg') }}" class="avatar-md img-fluid rounded-circle" alt="...">
+                                                                    <img src="{{ asset('backend/assets/images/users/cess.jpg') }}" class="avatar-md img-fluid rounded-circle" alt="...">
                                                                 </div>
                                                                 <div class="flex-grow-1 ms-3 mb-4">
-                                                                    <h5 class="font-size-18 text-white">Rosanna French
+                                                                    <h5 class="font-size-18 text-white">Leyla Mona Herlisa Putri
                                                                     </h5>
                                                                     <p class="mb-0 text-white-50">Web Developer</p>
                                                                 </div>
@@ -191,18 +193,18 @@
                                                     <div class="testi-contain text-white">
                                                         <i class="bx bxs-quote-alt-left text-success display-6"></i>
 
-                                                        <h4 class="mt-4 fw-medium lh-base text-white">“I've learned that
-                                                            people will forget what you said, people will forget what you
-                                                            did,
-                                                            but people will never forget
-                                                            how donec in efficitur lectus, nec lobortis metus you made them
-                                                            feel.”</h4>
+                                                        <h4 class="mt-4 fw-medium lh-base text-white">“Mulai hari dengan senyuman,
+                                                            akhiri dengan Rara Cookies.
+                                                            Karena hidup bukan cuma tentang kerja dan lelah,
+                                                            tapi juga tentang menikmati hal-hal kecil
+                                                            yang bikin hati ikut tersenyum.”
+                                                        </h4>
                                                         <div class="mt-4 pt-3 pb-5">
                                                             <div class="d-flex align-items-start">
                                                                 <img src="{{ asset('backend/assets/images/users/avatar-3.jpg') }}"
                                                                     class="avatar-md img-fluid rounded-circle" alt="...">
                                                                 <div class="flex-1 ms-3 mb-4">
-                                                                    <h5 class="font-size-18 text-white">Ilse R. Eaton</h5>
+                                                                    <h5 class="font-size-18 text-white">Rivan Nurdiansyah</h5>
                                                                     <p class="mb-0 text-white-50">Manager
                                                                     </p>
                                                                 </div>
