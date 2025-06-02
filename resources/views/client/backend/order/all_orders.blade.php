@@ -30,7 +30,7 @@
         <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
             <thead>
             <tr>
-                <th>Sl</th>
+                <th>No</th>
                 <th>Date</th>
                 <th>Invoice</th>
                 <th>Amount</th>

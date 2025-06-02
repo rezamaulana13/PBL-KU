@@ -44,8 +44,8 @@
 
     <div class="pt-2"></div>
     <div class="bg-white rounded shadow-sm p-4 mb-4">
-        <h4 class="mb-1">Choose a delivery address</h4>
-        <h6 class="mb-3 text-black-50">Multiple addresses in this location</h6>
+        <h4 class="mb-1">Pilih Alamat Pengiriman</h4>
+        <h6 class="mb-3 text-black-50">Lokasi Anda</h6>
         <div class="row">
             <div class="col-md-6">
                 <div class="bg-white card addresses-item mb-4 border border-success">
@@ -57,7 +57,7 @@
                             <p class="text-black">
                                 {{ $profileData->address }}
                             </p>
-                            <p class="mb-0 text-black font-weight-bold"><a class="btn btn-sm btn-success mr-2" href="#"> DELIVER HERE</a>
+                            <p class="mb-0 text-black font-weight-bold"><a class="btn btn-sm btn-success mr-2" href="#">Kirim</a>
                             <span>30MIN</span>
                             </p>
                         </div>
@@ -74,7 +74,7 @@
                             <h6 class="mb-1 text-secondary">Work</h6>
                             <p>Purwoasri, Tegaldlimo, Banyuwangi, Reza 68484, Indonesia
                             </p>
-                            <p class="mb-0 text-black font-weight-bold"><a class="btn btn-sm btn-secondary mr-2" href="#">DELIVER HERE</a>
+                            <p class="mb-0 text-black font-weight-bold"><a class="btn btn-sm btn-secondary mr-2" href="#"> Kirim</a>
                             <span>40MIN</span>
                             </p>
                         </div>
@@ -87,8 +87,8 @@
     </div>
                 <div class="pt-2"></div>
     <div class="bg-white rounded shadow-sm p-4 osahan-payment">
-        <h4 class="mb-1">Choose payment method</h4>
-        <h6 class="mb-3 text-black-50">Credit/Debit Cards</h6>
+        <h4 class="mb-1">Pilih Mode Pembayaran</h4>
+        <h6 class="mb-3 text-black-50">Kredit/Kartu Debit</h6>
         <div class="row">
             <div class="col-sm-4 pr-0">
                 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">

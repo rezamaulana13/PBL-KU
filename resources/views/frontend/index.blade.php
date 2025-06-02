@@ -53,7 +53,7 @@ $avarage = App\Models\Review::where('client_id',$client->id)->where('status',1)-
                   </div>
                   <div class="list-card-badge">
                      @if ($coupons)
-                     <span class="badge badge-success">OFFER</span> <small>{{ $coupons->discount  }}% off | Use Coupon {{ $coupons->coupon_name  }}</small>
+                     <span class="badge badge-success">Menawarkan</span> <small>{{ $coupons->discount  }}% off | Use Coupon {{ $coupons->coupon_name  }}</small>
                      @else
                      <span class="badge badge-success">Promo</span> <small>Pesan dan dapatkan promo</small>
                      @endif

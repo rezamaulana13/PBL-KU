@@ -80,7 +80,7 @@
                 <td>{{ $order->user->name }}</td>
             </tr>
             <tr>
-                <th width="50%"> Phone: </th>
+                <th width="50%"> No:Hp: </th>
                 <td>{{ $order->user->phone }}</td>
             </tr>
             <tr>
@@ -88,11 +88,11 @@
                 <td>{{ $order->user->email }}</td>
             </tr>
             <tr>
-                <th width="50%">Payment Type: </th>
+                <th width="50%">Tipe Pembayaran: </th>
                 <td>{{ $order->payment_method }}</td>
             </tr>
             <tr>
-                <th width="50%">Transx Id: </th>
+                <th width="50%">Id Transaksi: </th>
                 <td>{{ $order->transaction_id }}</td>
             </tr>
             <tr>

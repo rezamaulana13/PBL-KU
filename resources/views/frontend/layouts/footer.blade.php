@@ -2,7 +2,7 @@
     <div class="container">
        <div class="row">
           <div class="col-sm-12">
-             <h5 class="m-0">Ingin Bergabung dengan Kami? <a href="login.html">Klik</a></h5>
+             <h5 class="m-0">Ingin Bergabung dengan Kami? <a href="login.html">Click</a></h5>
           </div>
        </div>
     </div>
@@ -36,7 +36,7 @@
           <div class="col-md-1 col-sm-6 mobile-none">
           </div>
           <div class="col-md-2 col-6 col-sm-4">
-             <h6 class="mb-3">About OE</h6>
+             <h6 class="mb-3">About Of</h6>
              <ul>
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Culture</a></li>
@@ -46,7 +46,7 @@
              </ul>
           </div>
           <div class="col-md-2 col-6 col-sm-4">
-             <h6 class="mb-3">For Foodies</h6>
+             <h6 class="mb-3">For Cookies</h6>
              <ul>
                 <li><a href="#">Community</a></li>
                 <li><a href="#">Developers</a></li>
@@ -56,7 +56,7 @@
              </ul>
           </div>
           <div class="col-md-2 m-none col-4 col-sm-4">
-             <h6 class="mb-3">For Restaurants</h6>
+             <h6 class="mb-3">For Cake</h6>
              <ul>
                 <li><a href="#">Advertise</a></li>
                 <li><a href="#">Add a Restaurant</a></li>
