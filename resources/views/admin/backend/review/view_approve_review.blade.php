@@ -21,43 +21,63 @@
                     <div class="card-body">
         <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
             <thead>
-            <tr>
-                <th>Sl</th>
-                <th>User</th>
-                <th>Resturant</th>
-                <th>Comment</th>
-                <th>Rating</th>
-                <th>Status</th>
-                <th>Action </th>
-            </tr>
-            </thead>
-            <tbody>
-           @foreach ($approveReview as $key=> $item)
-            <tr>
-                <td>{{ $key+1 }}</td>
-                <td>{{ $item['user']['name'] }}</td>
-                <td>{{ $item['client']['name'] }}</td>
-                <td>{{ Str::limit($item->comment, 50, '...')  }}</td>
-                <td>
-                    @for ($i = 1; $i <= 5; $i++)
-                        <i class="bx bxs-star {{ $i <= $item->rating ? 'text-warning' : 'text-secondary' }}"></i>
-                    @endfor
-                    </td>
-                <td>
-                    @if ($item->status == 1)
-                    <span class="text-success"><b>Active</b></span>
-                    @else
-                    <span class="text-danger"><b>InActive</b></span>
-                    @endif
-                </td>
+<tr>
+    <th>Sl</th>
+    <th>User</th>
+    <th>Resturant</th>
+    <th>Comment</th>
+    <th>Rating</th>
+    <th>Media</th> {{-- ✅ Kolom baru --}}
+    <th>Status</th>
+    <th>Action </th>
+</tr>
+</thead>
+<tbody>
+@foreach ($approveReview as $key=> $item)
+<tr>
+    <td>{{ $key+1 }}</td>
+    <td>{{ $item['user']['name'] }}</td>
+    <td>{{ $item['client']['name'] }}</td>
+    <td>{{ Str::limit($item->comment, 50, '...')  }}</td>
+    <td>
+        @for ($i = 1; $i <= 5; $i++)
+            <i class="bx bxs-star {{ $i <= $item->rating ? 'text-warning' : 'text-secondary' }}"></i>
+        @endfor
+    </td>
 
-        <td>
-        <input data-id="{{$item->id}}" class="toggle-class" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="Inactive" {{ $item->status ? 'checked' : '' }}>
-                </td>
-            </tr>
-            @endforeach
+    {{-- ✅ Tambahan kolom Media --}}
+    <td>
+        @if($item->media)
+            @if(Str::endsWith($item->media, ['.mp4', '.mov', '.avi']))
+                <video width="120" controls>
+                    <source src="{{ asset('storage/'.$item->media) }}">
+                </video>
+            @else
+                <img src="{{ asset('storage/'.$item->media) }}" width="100" class="rounded">
+            @endif
+        @else
+            -
+        @endif
+    </td>
 
-            </tbody>
+    <td>
+        @if ($item->status == 1)
+            <span class="text-success"><b>Active</b></span>
+        @else
+            <span class="text-danger"><b>InActive</b></span>
+        @endif
+    </td>
+
+    <td>
+        <input data-id="{{$item->id}}" class="toggle-class" type="checkbox"
+               data-onstyle="success" data-offstyle="danger"
+               data-toggle="toggle" data-on="Active" data-off="Inactive"
+               {{ $item->status ? 'checked' : '' }}>
+    </td>
+</tr>
+@endforeach
+</tbody>
+
         </table>
                     </div>
                 </div>

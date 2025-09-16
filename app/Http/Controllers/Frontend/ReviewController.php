@@ -8,50 +8,100 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Review;
 use Carbon\Carbon;
+
+
 class ReviewController extends Controller
 {
-    public function StoreReview(Request $request){
+    /**
+     * Simpan review baru (dengan media opsional)
+     */
+    public function StoreReview(Request $request)
+    {
         $client = $request->client_id;
+
+        // Validasi input
         $request->validate([
-            'comment' => 'required'
+            'comment' => 'required|string',
+            'rating'  => 'nullable|numeric|min:1|max:5',
+            'media'   => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,mov,avi|max:5120',
         ]);
-        Review::insert([
-            'client_id' => $client,
-            'user_id' => Auth::id(),
-            'comment' => $request->comment,
-            'rating' => $request->rating,
+
+        // Default media null
+        $mediaPath = null;
+
+        // Jika ada file media (foto/video)
+        if ($request->hasFile('media')) {
+            $mediaPath = $request->file('media')->store('reviews', 'public');
+            // disimpan di storage/app/public/reviews
+        }
+
+        // Simpan ke database
+        Review::create([
+            'client_id'  => $client,
+            'user_id'    => Auth::id(),
+            'comment'    => $request->comment,
+            'rating'     => $request->rating,
+            'media'      => $mediaPath,
+            'status'     => 0, // default pending
             'created_at' => Carbon::now(),
         ]);
-        $notification = array(
-            'message' => 'Review Will Approlve By Admin',
+
+        // Notifikasi
+        $notification = [
+            'message'    => 'Review berhasil dikirim & akan direview admin.',
             'alert-type' => 'success'
-        );
+        ];
+
+        // Redirect kembali ke halaman produk + tab review
         $previousUrl = $request->headers->get('referer');
-        $redirectUrl = $previousUrl ? $previousUrl . '#pills-reviews' : route('res.details', ['id' => $client]) . '#pills-reviews';
+        $redirectUrl = $previousUrl
+            ? $previousUrl . '#pills-reviews'
+            : route('res.details', ['id' => $client]) . '#pills-reviews';
+
         return redirect()->to($redirectUrl)->with($notification);
     }
-    // End Method
-    public function AdminPendingReview(){
-        $pedingReview = Review::where('status',0)->orderBy('id','desc')->get();
-        return view('admin.backend.review.view_pending_review',compact('pedingReview'));
+
+    /**
+     * Review Pending (Admin)
+     */
+    public function AdminPendingReview()
+    {
+        $pendingReview = Review::where('status', 0)->orderBy('id', 'desc')->get();
+        return view('admin.backend.review.view_pending_review', compact('pendingReview'));
     }
-     // End Method
-     public function AdminApproveReview(){
-        $approveReview = Review::where('status',1)->orderBy('id','desc')->get();
-        return view('admin.backend.review.view_approve_review',compact('approveReview'));
+
+    /**
+     * Review Approved (Admin)
+     */
+    public function AdminApproveReview()
+    {
+        $approveReview = Review::where('status', 1)->orderBy('id', 'desc')->get();
+        return view('admin.backend.review.view_approve_review', compact('approveReview'));
     }
-     // End Method
-     public function ReviewChangeStatus(Request $request){
-        $review = Review::find($request->review_id);
+
+    /**
+     * Ganti status review (ajax admin)
+     */
+    public function ReviewChangeStatus(Request $request)
+    {
+        $review = Review::findOrFail($request->review_id);
         $review->status = $request->status;
         $review->save();
-        return response()->json(['success' => 'Status Change Successfully']);
+
+        return response()->json(['success' => 'Status berhasil diubah.']);
     }
-     // End Method
-     public function ClientAllReviews(){
+
+    /**
+     * Tampilkan semua review milik Client
+     */
+    public function ClientAllReviews()
+    {
         $id = Auth::guard('client')->id();
-        $allreviews = Review::where('status',1)->where('client_id',$id)->orderBy('id','desc')->get();
-        return view('client.backend.review.view_all_review',compact('allreviews'));
-     }
-      // End Method
+        $allreviews = Review::where('status', 1)
+            ->where('client_id', $id)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('client.backend.review.view_all_review', compact('allreviews'));
+    }
 }

@@ -19,6 +19,11 @@ class Product extends Model
     public function city(){
         return $this->belongsTo(City::class, 'city_id','id');
     }
+    public function reviews()
+{
+    return $this->hasMany(Review::class);
+}
+
 
 
 

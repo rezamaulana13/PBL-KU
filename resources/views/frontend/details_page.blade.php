@@ -285,6 +285,8 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
                          </span>
                          <h5 class="mb-0 pt-1">Rate this Place</h5>
                       </div>
+
+
    <div class="bg-white rounded shadow-sm p-4 mb-4 clearfix graph-star-rating">
       <h5 class="mb-4">Ratings and Reviews</h5>
       <div class="graph-star-rating-header">
@@ -339,38 +341,56 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
 
       @foreach ($reviews as $review)
 
-      <div class="reviews-members pt-4 pb-4">
-         <div class="media">
-            <a href="#"><img alt="Generic placeholder image" src="{{ (!empty($review->user->photo)) ? url('upload/user_images/'.$review->user->photo) : url('upload/no_image.jpg') }}" class="mr-3 rounded-pill"></a>
-            <div class="media-body">
-               <div class="reviews-members-header">
-                  <span class="star-rating float-right">
-                    @php
-                       $rating = $review->rating ?? 0;
-                    @endphp
-                   @for ($i = 1; $i <= 5; $i++)
-                     @if ($i <= $rating)
-                     <a href="#"><i class="icofont-ui-rating active"></i></a>
-                     @else
-                     <a href="#"><i class="icofont-ui-rating"></i></a>
-                     @endif
-                  @endfor
-                  </span>
-                  <h6 class="mb-1"><a class="text-black" href="#">{{ $review->user->name }}</a></h6>
-                  <p class="text-gray"> {{ Carbon\Carbon::parse($review->created_at)->diffForHumans() }} </p>
-               </div>
-               <div class="reviews-members-body">
-                  <p> {{ $review->comment }} </p>
-               </div>
-               <div class="reviews-members-footer">
-                  <a class="total-like" href="#"><i class="icofont-thumbs-up"></i> 856M</a> <a class="total-like" href="#"><i class="icofont-thumbs-down"></i> 158K</a>
+<div class="reviews-members pt-4 pb-4">
+   <div class="media">
+      <a href="#">
+         <img alt="Generic placeholder image"
+              src="{{ (!empty($review->user->photo)) ? url('upload/user_images/'.$review->user->photo) : url('upload/no_image.jpg') }}"
+              class="mr-3 rounded-pill">
+      </a>
+      <div class="media-body">
+         <div class="reviews-members-header">
+            <span class="star-rating float-right">
+              @php $rating = $review->rating ?? 0; @endphp
+              @for ($i = 1; $i <= 5; $i++)
+                 @if ($i <= $rating)
+                 <a href="#"><i class="icofont-ui-rating active"></i></a>
+                 @else
+                 <a href="#"><i class="icofont-ui-rating"></i></a>
+                 @endif
+              @endfor
+            </span>
+            <h6 class="mb-1"><a class="text-black" href="#">{{ $review->user->name }}</a></h6>
+            <p class="text-gray"> {{ Carbon\Carbon::parse($review->created_at)->diffForHumans() }} </p>
+         </div>
+         <div class="reviews-members-body">
+            <p>{{ $review->comment }}</p>
 
-               </div>
-            </div>
+            {{-- Tambahin media kalau ada --}}
+            @if ($review->media)
+               @if(Str::endsWith($review->media, ['.jpg', '.jpeg', '.png', '.gif']))
+                  <img src="{{ asset('storage/' . $review->media) }}"
+                       alt="Review Image"
+                       class="mt-2 rounded"
+                       style="max-width: 250px;">
+               @elseif(Str::endsWith($review->media, ['.mp4', '.mov', '.avi']))
+                  <video controls class="mt-2 rounded" style="max-width: 350px;">
+                     <source src="{{ asset('storage/' . $review->media) }}" type="video/mp4">
+                     Browser tidak mendukung video.
+                  </video>
+               @endif
+            @endif
+         </div>
+         <div class="reviews-members-footer">
+            <a class="total-like" href="#"><i class="icofont-thumbs-up"></i> 856M</a>
+            <a class="total-like" href="#"><i class="icofont-thumbs-down"></i> 158K</a>
          </div>
       </div>
+   </div>
+</div>
 
-      @endforeach
+@endforeach
+
 
       <hr>
 
@@ -400,40 +420,53 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
 
       <h5 class="mb-4">Leave Comment</h5>
       <p class="mb-2">Rate the Place</p>
-      <form method="post" action="{{ route('store.review') }}">
-         @csrf
-         <input type="hidden" name="client_id" value="{{ $client->id }}">
+      <form method="post" action="{{ route('store.review') }}" enctype="multipart/form-data">
+   @csrf
+   <input type="hidden" name="client_id" value="{{ $client->id }}">
 
-      <div class="mb-4">
-         <span class="star-rating">
-            <label for="rating-1">
-            <input type="radio" name="rating" id="rating-1" value="1" hidden><i class="icofont-ui-rating icofont-2x star-icon"></i></label>
+   <div class="mb-4">
+      <span class="star-rating">
+         {{-- rating bintang tetap sama --}}
+         <label for="rating-1">
+            <input type="radio" name="rating" id="rating-1" value="1" hidden>
+            <i class="icofont-ui-rating icofont-2x star-icon"></i>
+         </label>
+         <label for="rating-2">
+            <input type="radio" name="rating" id="rating-2" value="2" hidden>
+            <i class="icofont-ui-rating icofont-2x star-icon"></i>
+         </label>
+         <label for="rating-3">
+            <input type="radio" name="rating" id="rating-3" value="3" hidden>
+            <i class="icofont-ui-rating icofont-2x star-icon"></i>
+         </label>
+         <label for="rating-4">
+            <input type="radio" name="rating" id="rating-4" value="4" hidden>
+            <i class="icofont-ui-rating icofont-2x star-icon"></i>
+         </label>
+         <label for="rating-5">
+            <input type="radio" name="rating" id="rating-5" value="5" hidden>
+            <i class="icofont-ui-rating icofont-2x star-icon"></i>
+         </label>
+      </span>
+   </div>
 
-            <label for="rating-2">
-            <input type="radio" name="rating" id="rating-2" value="2" hidden><i class="icofont-ui-rating icofont-2x star-icon"></i></label>
-            <label for="rating-3">
-            <input type="radio" name="rating" id="rating-3" value="3" hidden><i class="icofont-ui-rating icofont-2x star-icon"></i></label>
+   <div class="form-group">
+      <label>Your Comment</label>
+      <textarea class="form-control" name="comment" id="comment"></textarea>
+   </div>
 
-            <label for="rating-4">
-            <input type="radio" name="rating" id="rating-4" value="4" hidden><i class="icofont-ui-rating icofont-2x star-icon"></i></label>
+   <div class="form-group">
+      <label>Upload Foto/Video (opsional)</label>
+      <input type="file" class="form-control" name="media">
+   </div>
 
-            <label for="rating-5">
-            <input type="radio" name="rating" id="rating-5" value="5" hidden><i class="icofont-ui-rating icofont-2x star-icon"></i></label>
-
-
-         </span>
-      </div>
-
-         <div class="form-group">
-            <label>Your Comment</label>
-            <textarea class="form-control" name="comment" id="comment"></textarea>
-         </div>
-         <div class="form-group">
-            <button class="btn btn-primary btn-sm" type="submit"> Submit Comment </button>
-         </div>
-      </form>
-
+   <div class="form-group">
+      <button class="btn btn-primary btn-sm" type="submit">Submit Comment</button>
+   </div>
+</form>
    @endguest
+
+
    </div>
                    </div>
                 </div>
