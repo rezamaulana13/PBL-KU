@@ -283,12 +283,12 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
                          <a href="#"><i class="icofont-ui-rating icofont-2x active"></i></a>
                          <a href="#"><i class="icofont-ui-rating icofont-2x"></i></a>
                          </span>
-                         <h5 class="mb-0 pt-1">Rate this Place</h5>
+                         <h5 class="mb-0 pt-1">Beri Nilai Pesanan Anda</h5>
                       </div>
 
 
    <div class="bg-white rounded shadow-sm p-4 mb-4 clearfix graph-star-rating">
-      <h5 class="mb-4">Ratings and Reviews</h5>
+      <h5 class="mb-4">Rating dan Ulasan</h5>
       <div class="graph-star-rating-header">
          <div class="star-rating">
             @for ($i = 1; $i <= 5; $i++)
@@ -296,7 +296,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
             @endfor
               <b class="text-black ml-2">{{ $totalReviews }}</b>
          </div>
-         <p class="text-black mb-4 mt-2">Rated {{$roundedAverageRating}} out of 5</p>
+         <p class="text-black mb-4 mt-2">Rating {{$roundedAverageRating}} out of 5</p>
       </div>
 
       <div class="graph-star-rating-body">
@@ -304,7 +304,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
          @foreach ($ratingCounts as $star => $count)
          <div class="rating-list">
             <div class="rating-list-left text-black">
-               {{ $star }} Star
+               {{ $star }} Bintang
             </div>
             <div class="rating-list-center">
                <div class="progress">
@@ -321,12 +321,12 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
 
 
       <div class="graph-star-rating-footer text-center mt-3 mb-3">
-         <button type="button" class="btn btn-outline-primary btn-sm">Rate and Review</button>
+         <button type="button" class="btn btn-outline-primary btn-sm">Rating dan Ulasan</button>
       </div>
    </div>
    <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
-      <a href="#" class="btn btn-outline-primary btn-sm float-right">Top Rated</a>
-      <h5 class="mb-1">All Ratings and Reviews</h5>
+      <a href="#" class="btn btn-outline-primary btn-sm float-right">Top Rating</a>
+      <h5 class="mb-1">Komentar dan Ulasan</h5>
  <style>
    .icofont-ui-rating {
       color: #ccc;
@@ -382,8 +382,8 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
             @endif
          </div>
          <div class="reviews-members-footer">
-            <a class="total-like" href="#"><i class="icofont-thumbs-up"></i> 856M</a>
-            <a class="total-like" href="#"><i class="icofont-thumbs-down"></i> 158K</a>
+            <a class="total-like" href="#"><i class="icofont-thumbs-up"></i> 120</a>
+            <a class="total-like" href="#"><i class="icofont-thumbs-down"></i> 50</a>
          </div>
       </div>
    </div>
@@ -395,7 +395,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
       <hr>
 
       <hr>
-      <a class="text-center w-100 d-block mt-4 font-weight-bold" href="#">See All Reviews</a>
+      <a class="text-center w-100 d-block mt-4 font-weight-bold" href="#">Lihat Semua Komentar</a>
    </div>
 
 
@@ -418,8 +418,8 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
    }
   </style>
 
-      <h5 class="mb-4">Leave Comment</h5>
-      <p class="mb-2">Rate the Place</p>
+      <h5 class="mb-4">Masukkan Komentar</h5>
+      <p class="mb-2">Rating Pesanan</p>
       <form method="post" action="{{ route('store.review') }}" enctype="multipart/form-data">
    @csrf
    <input type="hidden" name="client_id" value="{{ $client->id }}">
@@ -451,7 +451,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
    </div>
 
    <div class="form-group">
-      <label>Your Comment</label>
+      <label>Komentar</label>
       <textarea class="form-control" name="comment" id="comment"></textarea>
    </div>
 
@@ -461,7 +461,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
    </div>
 
    <div class="form-group">
-      <button class="btn btn-primary btn-sm" type="submit">Submit Comment</button>
+      <button class="btn btn-primary btn-sm" type="submit">Selesai</button>
    </div>
 </form>
    @endguest

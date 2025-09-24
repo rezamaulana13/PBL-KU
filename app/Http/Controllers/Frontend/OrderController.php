@@ -5,163 +5,178 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
 use Illuminate\Support\Facades\Session;
-use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Carbon\Carbon;
 
 class OrderController extends Controller
 {
-    public function CashOrder(Request $request){
-
-        $validateData = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
+    /**
+     * Cash On Delivery Order
+     */
+    public function CashOrder(Request $request)
+    {
+        // Validasi data form
+        $request->validate([
+            'name'    => 'required',
+            'email'   => 'required',
+            'phone'   => 'required',
             'address' => 'required',
         ]);
 
-        $cart = session()->get('cart',[]);
-        $totalAmount = 0;
+        // Hitung total belanja dari cart
+        $cart = Session::get('cart', []);
+        $totalAmount = collect($cart)->sum(fn($c) => $c['price'] * $c['quantity']);
 
-        foreach($cart as $car){
-            $totalAmount += ($car['price'] * $car['quantity']);
-        }
+        // Jika ada kupon, pakai nilai diskon, kalau tidak total belanja
+        $tt = Session::has('coupon')
+            ? Session::get('coupon')['discount_amount']
+            : $totalAmount;
 
-        if (Session()->has('coupon')) {
-            $tt = (Session()->get('coupon')['discount_amount']);
-        } else {
-            $tt = $totalAmount;
-        }
-
+        // Simpan order
         $order_id = Order::insertGetId([
-            'user_id' => Auth::id(),
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'payment_type' => 'Cash On Delivery',
-            'payment_method' => 'Cash On Delivery',
-
-            'currency' => 'USD',
-            'amount' => $totalAmount,
-            'total_amount' => $tt,
-            'invoice_no' => 'easyshop' .mt_rand(10000000,99999999),
-            'order_date' => Carbon::now()->format('d F Y'),
-            'order_month' => Carbon::now()->format('F'),
-            'order_year' => Carbon::now()->format('Y'),
-
-            'status' => 'Pending',
-            'created_at' => Carbon::now(),
-
+            'user_id'       => Auth::id(),
+            'name'          => $request->name,
+            'email'         => $request->email,
+            'phone'         => $request->phone,
+            'address'       => $request->address,
+            'payment_type'  => 'Cash On Delivery',
+            'payment_method'=> 'Cash On Delivery',
+            'currency'      => 'IDR',
+            'amount'        => $totalAmount,
+            'total_amount'  => $tt,
+            'invoice_no'    => 'easyshop' . mt_rand(10000000, 99999999),
+            'order_date'    => Carbon::now()->format('d F Y'),
+            'order_month'   => Carbon::now()->format('F'),
+            'order_year'    => Carbon::now()->format('Y'),
+            'status'        => 'Pending',
+            'created_at'    => Carbon::now(),
+            'updated_at'    => Carbon::now(),
         ]);
 
-        $carts = session()->get('cart',[]);
-        foreach ($carts as $cart) {
+        // Simpan item order
+        foreach ($cart as $c) {
             OrderItem::insert([
-                'order_id' => $order_id,
-                'product_id' => $cart['id'],
-                'client_id' => $cart['client_id'],
-                'qty' => $cart['quantity'],
-                'price' => $cart['price'],
-                'created_at' => Carbon::now(),
+                'order_id'  => $order_id,
+                'product_id'=> $c['id'],
+                'client_id' => $c['client_id'],
+                'qty'       => $c['quantity'],
+                'price'     => $c['price'],
+                'created_at'=> Carbon::now(),
             ]);
-        } // End Foreach
-
-        if (Session::has('coupon')) {
-           Session::forget('coupon');
         }
 
-        if (Session::has('cart')) {
-            Session::forget('cart');
-         }
+        // Hapus cart & kupon dari session
+        Session::forget(['cart', 'coupon']);
 
-         $notification = array(
-            'message' => 'Order Placed Successfully',
+        return view('frontend.checkout.thanks')->with([
+            'message'    => 'Order Placed Successfully',
             'alert-type' => 'success'
-        );
-
-        return view('frontend.checkout.thanks')->with($notification);
-
+        ]);
     }
-    //End Method
-    public function StripeOrder(Request $request){
-        $validateData = $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'phone' => 'required',
+
+    /**
+     * Stripe Order
+     */
+    public function StripeOrder(Request $request)
+    {
+        $request->validate([
+            'name'    => 'required',
+            'email'   => 'required',
+            'phone'   => 'required',
             'address' => 'required',
         ]);
-        $cart = session()->get('cart',[]);
-        $totalAmount = 0;
-        foreach($cart as $car){
-            $totalAmount += ($car['price'] * $car['quantity']);
-        }
-        if (Session()->has('coupon')) {
-            $tt = (Session()->get('coupon')['discount_amount']);
-        } else {
-            $tt = $totalAmount;
-        }
+
+        $cart = Session::get('cart', []);
+        $totalAmount = collect($cart)->sum(fn($c) => $c['price'] * $c['quantity']);
+
+        $tt = Session::has('coupon')
+            ? Session::get('coupon')['discount_amount']
+            : $totalAmount;
+
+        // Stripe charge
         \Stripe\Stripe::setApiKey('sk_test_51QRCFaGbu7uS4hyTGxE78S3pWpkxSd2GbxF2cRiFYhkk2aFxSCAxKJJU6kl8pLkTSLPJ4TnR6vQeAof1DC5P5ZCx00vUFHMtFa');
 
-        $token = $_POST['stripeToken'];
+        $token = $request->stripeToken;
+
         $charge = \Stripe\Charge::create([
-            'amount' => $totalAmount*100,
-            'currency' => 'usd',
-            'description' => 'EasyFood  Delivery',
-            'source' => $token,
-            'metadata' => ['order_id' => '6735']
+            'amount'      => $totalAmount * 100, // cent
+            'currency'    => 'usd',
+            'description' => 'EasyFood Delivery',
+            'source'      => $token,
+            'metadata'    => ['order_id' => '6735'],
         ]);
 
+        // Simpan order
         $order_id = Order::insertGetId([
-            'user_id' => Auth::id(),
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'payment_type' => $charge->payment_method,
-            'payment_method' => 'Stripe',
-            'currency' => $charge->currency,
+            'user_id'        => Auth::id(),
+            'name'           => $request->name,
+            'email'          => $request->email,
+            'phone'          => $request->phone,
+            'address'        => $request->address,
+            'payment_type'   => 'Stripe',
+            'payment_method' => $charge->payment_method ?? 'Stripe',
+            'currency'       => 'IDR', // dipaksa IDR biar konsisten
             'transaction_id' => $charge->balance_transaction,
-            'amount' => $totalAmount,
-            'total_amount' => $tt,
-            'order_number' => $charge->metadata->order_id,
-
-            'invoice_no' => 'easyshop' .mt_rand(10000000,99999999),
-            'order_date' => Carbon::now()->format('d F Y'),
-            'order_month' => Carbon::now()->format('F'),
-            'order_year' => Carbon::now()->format('Y'),
-            'status' => 'Pending',
-            'created_at' => Carbon::now(),
+            'amount'         => $totalAmount,
+            'total_amount'   => $tt,
+            'order_number'   => $charge->metadata->order_id,
+            'invoice_no'     => 'easyshop' . mt_rand(10000000, 99999999),
+            'order_date'     => Carbon::now()->format('d F Y'),
+            'order_month'    => Carbon::now()->format('F'),
+            'order_year'     => Carbon::now()->format('Y'),
+            'status'         => 'Pending',
+            'created_at'     => Carbon::now(),
+            'updated_at'     => Carbon::now(),
         ]);
-        $carts = session()->get('cart',[]);
-        foreach ($carts as $cart) {
+
+
+        foreach ($cart as $c) {
             OrderItem::insert([
-                'order_id' => $order_id,
-                'product_id' => $cart['id'],
-                'client_id' => $cart['client_id'],
-                'qty' => $cart['quantity'],
-                'price' => $cart['price'],
-                'created_at' => Carbon::now(),
+                'order_id'  => $order_id,
+                'product_id'=> $c['id'],
+                'client_id' => $c['client_id'],
+                'qty'       => $c['quantity'],
+                'price'     => $c['price'],
+                'created_at'=> Carbon::now(),
             ]);
-        } // End Foreach
-        if (Session::has('coupon')) {
-           Session::forget('coupon');
         }
-        if (Session::has('cart')) {
-            Session::forget('cart');
-         }
-         $notification = array(
-            'message' => 'Order Placed Successfully',
+
+        Session::forget(['cart', 'coupon']);
+
+        return view('frontend.checkout.thanks')->with([
+            'message'    => 'Order Placed Successfully',
             'alert-type' => 'success'
-        );
-        return view('frontend.checkout.thanks')->with($notification);
-
+        ]);
     }
-    //End Method
 
+    /**
+     * Cancel Order
+     */
+    // Pastikan ini adalah fungsi yang Anda gunakan
+public function CancelOrder($id)
+{
+    $order = Order::where('id', $id)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
 
+    if (in_array(strtolower($order->status), ['pending', 'processing', 'confirm'])) {
+        $order->status = 'cancelled';
+        $order->save();
 
+        return redirect()->back()->with([
+            'message'    => 'Pesanan berhasil dibatalkan.',
+            'alert-type' => 'success'
+        ]);
+    } else {
+        // Tambahkan baris ini di sini
+        dd($order->status);
+
+        return redirect()->back()->with([
+            'message'    => 'Pesanan tidak bisa dibatalkan.',
+            'alert-type' => 'error'
+        ]);
+    }
+}
 }

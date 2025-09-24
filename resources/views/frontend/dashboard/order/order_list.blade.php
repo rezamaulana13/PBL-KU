@@ -7,79 +7,88 @@
 @endphp
 <section class="section pt-4 pb-4 osahan-account-page">
     <div class="container">
-       <div class="row">
+        <div class="row">
 
         @include('frontend.dashboard.sidebar')
-<div class="col-md-9">
-    <div class="osahan-account-page-right rounded shadow-sm bg-white p-4 h-100">
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-            <h4 class="font-weight-bold mt-0 mb-4">Order List   </h4>
+        <div class="col-md-9">
+            <div class="osahan-account-page-right rounded shadow-sm bg-white p-4 h-100">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                        <h4 class="font-weight-bold mt-0 mb-4">Daftar Pesanan</h4>
 
+                        <div class="bg-white card mb-4 order-list shadow-sm">
+                            <div class="gold-members p-4">
 
-    <div class="bg-white card mb-4 order-list shadow-sm">
-        <div class="gold-members p-4">
+                                <table class="table table-bordered dt-responsive nowrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Tanggal</th>
+                                            <th>Invoice</th>
+                                            <th>Jumlah</th>
+                                            <th>Pembayaran</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
 
-            <table class="table table-bordered dt-responsive  nowrap w-100">
-                <thead>
-                <tr>
-                    <th>Sl</th>
-                    <th>Date</th>
-                    <th>Invoice</th>
-                    <th>Amount</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                    <th>Action </th>
-                </tr>
-                </thead>
+                                    <tbody>
+                                    @foreach ($allUserOrder as $key => $item)
+                                        <tr>
+                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $item->order_date }}</td>
+                                            <td>{{ $item->invoice_no }}</td>
+                                            <td>{{ $item->amount }}</td>
+                                            <td>{{ $item->payment_method }}</td>
+<td>
+    @if (strtolower(trim($item->status)) == 'pending')
+        <span class="badge bg-info">Menunggu</span>
+    @elseif (strtolower(trim($item->status)) == 'confirm')
+        <span class="badge bg-primary">Dikonfirmasi</span>
+    @elseif (strtolower(trim($item->status)) == 'processing')
+        <span class="badge bg-warning">Diproses</span>
+    @elseif (strtolower(trim($item->status)) == 'deliverd')
+        <span class="badge bg-success">Dikirim</span>
+    @elseif (strtolower(trim($item->status)) == 'cancelled')
+        <span class="badge bg-danger">Dibatalkan</span>
+    @endif
+</td>
+<td class="d-flex align-items-center gap-2">
+    {{-- Tombol Lihat Detail --}}
+    <a href="{{ route('user.order.details',$item->id) }}" class="btn btn-sm btn-outline-primary" title="Lihat Detail Pesanan">
+        <i class="fas fa-eye"></i> Lihat
+    </a>
 
+    {{-- Tombol Unduh Invoice --}}
+    <a href="{{ route('user.invoice.download',$item->id) }}" class="btn btn-sm btn-outline-danger" title="Unduh Invoice">
+        <i class="fa fa-download"></i> Invoice
+    </a>
 
-                <tbody>
-               @foreach ($allUserOrder as $key=> $item)
-                <tr>
-                    <td>{{ $key+1 }}</td>
-                    <td>{{ $item->order_date }}</td>
-                    <td>{{ $item->invoice_no }}</td>
-                    <td>{{ $item->amount }}</td>
-                    <td>{{ $item->payment_method }}</td>
-                    <td>
-                    @if ($item->status == 'Pending')
-                    <span class="badge bg-info">Pending</span>
-                    @elseif ($item->status == 'confirm')
-                    <span class="badge bg-primary">Confirm</span>
-                    @elseif ($item->status == 'processing')
-                    <span class="badge bg-warning">Processing</span>
-                    @elseif ($item->status == 'deliverd')
-                    <span class="badge bg-success">Deliverd</span>
-                    @endif
-                    </td>
+    {{-- Tombol Batalkan Pesanan (Hanya Muncul Sesuai Status) --}}
+    @if(in_array(strtolower($item->status), ['pending', 'processing', 'confirm']))
+        <form action="{{ route('user.order.cancel', $item->id) }}" method="POST"
+            onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')" class="d-inline-block">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="btn btn-sm btn-outline-warning" title="Batalkan Pesanan">
+                <i class="fas fa-times"></i> Batalkan
+            </button>
+        </form>
+    @endif
+</td>
+                                         </tr>
+                                     @endforeach
+                                     </tbody>
+                                 </table>
 
+                             </div>
+                         </div>
 
-            <td class="d-flex justify-content-between">
-             <a href="{{ route('user.order.details',$item->id) }}" class="btn-small d-block text-primary"> <i class="fas fa-eye"></i> View</a>
-             <a href="{{ route('user.invoice.download',$item->id) }}" class="btn-small d-block text-danger"> <i class="fa fa-download"></i> Invoice</a>
-
-
-                    </td>
-                </tr>
-                @endforeach
-
-                </tbody>
-            </table>
-
-
+                     </div>
+                 </div>
+             </div>
+         </div>
         </div>
     </div>
-
-        </div>
-
-
-
-
-    </div>
-    </div>
-</div>
-       </div>
-    </div>
- </section>
+</section>
 @endsection

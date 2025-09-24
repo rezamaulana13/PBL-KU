@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -119,4 +120,28 @@ class ManageOrderController extends Controller
         return $pdf->download('invoice.pdf');
     }
      //End Method
+
+    // 👉 fitur baru: pembatalan pesanan user
+    public function UserOrderCancel($id){
+        $order = Order::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        if (in_array($order->status, ['Pending', 'processing'])) {
+            $order->status = 'canceled';
+            $order->save();
+
+            $notification = array(
+                'message' => 'Pesanan berhasil dibatalkan.',
+                'alert-type' => 'success'
+            );
+        } else {
+            $notification = array(
+                'message' => 'Pesanan tidak bisa dibatalkan.',
+                'alert-type' => 'error'
+            );
+        }
+
+        return redirect()->route('user.order.list')->with($notification);
+    }
 }

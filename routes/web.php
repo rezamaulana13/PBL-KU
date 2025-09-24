@@ -43,6 +43,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/user/order/list', 'UserOrderList')->name('user.order.list');
         Route::get('/user/order/details/{id}', 'UserOrderDetails')->name('user.order.details');
         Route::get('/user/invoice/download/{id}', 'UserInvoiceDownload')->name('user.invoice.download');
+        // 👉 route baru: pembatalan pesanan
+        Route::patch('/user/order/cancel/{id}', 'UserOrderCancel')->name('user.order.cancel');
 
     });
 });
@@ -240,11 +242,16 @@ Route::controller(CartController::class)->group(function(){
     Route::get('/checkout', 'ShopCheckout')->name('checkout');
 
 });
+
 Route::controller(OrderController::class)->group(function(){
     Route::post('/cash_order', 'CashOrder')->name('cash_order');
     Route::post('/stripe_order', 'StripeOrder')->name('stripe_order');
-
 });
+
+// Halaman terima kasih
+Route::get('/thanks', function() {
+    return view('frontend.checkout.thanks');})->name('thanks');
+
 Route::controller(ReviewController::class)->group(function(){
     Route::post('/store/review', 'StoreReview')->name('store.review');
 

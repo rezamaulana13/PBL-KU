@@ -250,13 +250,25 @@
 
 
 
-        <a href="thanks.html" class="btn btn-success btn-block btn-lg">PAY
-            @if (Session::has('coupon'))
+    <form action="{{ route('cash_order') }}" method="POST">
+    @csrf
+    <input type="hidden" name="name" value="{{ Auth::user()->name }}">
+    <input type="hidden" name="email" value="{{ Auth::user()->email }}">
+    <input type="hidden" name="phone" value="{{ Auth::user()->phone }}">
+    <input type="hidden" name="address" value="{{ Auth::user()->address }}">
+    <input type="hidden" name="amount" value="{{ Session::has('coupon') ? Session::get('coupon')['discount_amount'] : $total }}">
+
+    <button type="submit" class="btn btn-success btn-block btn-lg">
+        PAY
+        @if (Session::has('coupon'))
             ${{ Session()->get('coupon')['discount_amount'] }}
-            @else
+        @else
             ${{ $total }}
-            @endif
-        <i class="icofont-long-arrow-right"></i></a>
+        @endif
+        <i class="icofont-long-arrow-right"></i>
+    </button>
+</form>
+
         </div>
         <div class="pt-2"></div>
 

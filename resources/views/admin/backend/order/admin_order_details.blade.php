@@ -112,7 +112,7 @@
     <th width="50%"> </th>
     <td>
         @if($order->status == 'Pending')
-        <a href="{{ route('pening_to_confirm',$order->id) }}" class="btn btn-block btn-success" id="confirmOrder">Confirm Order</a>
+        <a href="{{ route('pending_to_confirm',$order->id) }}" class="btn btn-block btn-success" id="confirmOrder">Confirm Order</a>
         @elseif ($order->status == 'confirm')
         <a href="{{ route('confirm_to_processing',$order->id) }}" class="btn btn-block btn-success" id="processingOrder">Processing Order</a>
         @elseif ($order->status == 'processing')
