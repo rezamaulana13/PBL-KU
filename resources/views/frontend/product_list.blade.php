@@ -13,10 +13,15 @@
         <div class="list-card-body">
         <h6 class="mb-1"><a href="{{ route('res.details',$product->client_id) }}" class="text-black"> {{ $product->name}}</a></h6>
 
-        <p class="text-gray mb-3 time"><span class="bg-light text-dark rounded-sm pl-2 pb-1 pt-1 pr-2"><i class="icofont-wall-clock"></i> 20–25 min</span> <span class="float-right text-black-50"> {{ $product->price }}</span></p>
+        <p class="text-gray mb-3 time">
+            <span class="bg-light text-dark rounded-sm pl-2 pb-1 pt-1 pr-2">
+                <i class="icofont-wall-clock"></i> 20–25 menit
+            </span>
+            <span class="float-right text-black-50"> Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+        </p>
         </div>
         <div class="list-card-badge">
-        <span class="badge badge-success">Promo</span> <small>65% off | Pakai Kupon Raracoockies</small>
+        <span class="badge badge-success">Promo</span> <small>Diskon 65% | Gunakan Kupon Raracookies</small>
         </div>
     </div>
 </div>

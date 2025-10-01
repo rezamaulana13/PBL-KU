@@ -33,7 +33,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
                 <div class="restaurant-detailed-header-right text-right">
                    <button class="btn btn-success" type="button"><i class="icofont-clock-time"></i> 25–35 min
                    </button>
-                   <h6 class="text-white mb-0 restaurant-detailed-ratings"><span class="generator-bg rounded text-white"><i class="icofont-star"></i> 3.1</span> 23 Ratings  <i class="ml-3 icofont-speech-comments"></i> 91 reviews</h6>
+                   <h6 class="text-white mb-0 restaurant-detailed-ratings"><span class="generator-bg rounded text-white"><i class="icofont-star"></i> 4.9</span> 10.478 Laporan  <i class="ml-3 icofont-speech-comments"></i> 91 Ulasan</h6>
                 </div>
              </div>
           </div>
@@ -46,25 +46,25 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
        <div class="row">
           <div class="col-md-12">
              <span class="restaurant-detailed-action-btn float-right">
-             <button class="btn btn-light btn-sm border-light-btn" type="button"><i class="icofont-heart text-danger"></i> Mark as Favourite</button>
-             <button class="btn btn-light btn-sm border-light-btn" type="button"><i class="icofont-cauli-flower text-success"></i>  Pure Veg</button>
-             <button class="btn btn-outline-danger btn-sm" type="button"><i class="icofont-sale-discount"></i>  OFFERS</button>
+             <button class="btn btn-light btn-sm border-light-btn" type="button"><i class="icofont-heart text-danger"></i> Pesanan Favorit</button>
+             <button class="btn btn-light btn-sm border-light-btn" type="button"><i class="icofont-cauli-flower text-success"></i> Bahan alami </button>
+             <button class="btn btn-outline-danger btn-sm" type="button"><i class="icofont-sale-discount"></i> Diskon </button>
              </span>
              <ul class="nav" id="pills-tab" role="tablist">
                 <li class="nav-item">
-                   <a class="nav-link active" id="pills-order-online-tab" data-toggle="pill" href="#pills-order-online" role="tab" aria-controls="pills-order-online" aria-selected="true">Order Online</a>
+                   <a class="nav-link active" id="pills-order-online-tab" data-toggle="pill" href="#pills-order-online" role="tab" aria-controls="pills-order-online" aria-selected="true">Pesan Online</a>
                 </li>
                 <li class="nav-item">
-                   <a class="nav-link" id="pills-gallery-tab" data-toggle="pill" href="#pills-gallery" role="tab" aria-controls="pills-gallery" aria-selected="false">Gallery</a>
+                   <a class="nav-link" id="pills-gallery-tab" data-toggle="pill" href="#pills-gallery" role="tab" aria-controls="pills-gallery" aria-selected="false">Galeri</a>
                 </li>
                 <li class="nav-item">
-                   <a class="nav-link" id="pills-restaurant-info-tab" data-toggle="pill" href="#pills-restaurant-info" role="tab" aria-controls="pills-restaurant-info" aria-selected="false">Restaurant Info</a>
+                   <a class="nav-link" id="pills-restaurant-info-tab" data-toggle="pill" href="#pills-restaurant-info" role="tab" aria-controls="pills-restaurant-info" aria-selected="false">Tentang Kami</a>
                 </li>
                 <li class="nav-item">
                    <a class="nav-link" id="pills-book-tab" data-toggle="pill" href="#pills-book" role="tab" aria-controls="pills-book" aria-selected="false">Book A Table</a>
                 </li>
                 <li class="nav-item">
-                   <a class="nav-link" id="pills-reviews-tab" data-toggle="pill" href="#pills-reviews" role="tab" aria-controls="pills-reviews" aria-selected="false">Ratings & Reviews</a>
+                   <a class="nav-link" id="pills-reviews-tab" data-toggle="pill" href="#pills-reviews" role="tab" aria-controls="pills-reviews" aria-selected="false">Laporan & Ulasan</a>
                 </li>
              </ul>
           </div>
@@ -83,25 +83,26 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
         $populers = App\Models\Product::where('status',1)->where('client_id',$client->id)->where('most_populer',1)->orderBy('id','desc')->limit(5)->get();
     @endphp
     <div id="#menu" class="bg-white rounded shadow-sm p-4 mb-4 explore-outlets">
-        <h6 class="mb-3">Most Popular  <span class="badge badge-success"><i class="icofont-tags"></i> 15% Off All Items </span></h6>
+        <h6 class="mb-3"> Kue Terpopoler<span class="badge badge-success"><i class="icofont-tags"></i> Diskon 15% </span></h6>
         <div class="owl-carousel owl-theme owl-carousel-five offers-interested-carousel mb-3">
 
        @foreach ($populers as $populer)
         <div class="item">
             <div class="mall-category-item">
-                <a href="#">
-                    <img class="img-fluid" src="{{ asset($populer->image) }}">
-                    <h6>{{ $populer->name }}</h6>
-                    @if ($populer->discount_price == NULL)
-                        ${{$populer->price}}
-                    @else
-                    $<del>{{$populer->price}}</del> ${{$populer->discount_price}}
-                    @endif
-                    <span class="float-right">
-                     <a class="btn btn-outline-secondary btn-sm" href="{{ route('add_to_cart',$populer->id)}}">ADD</a>
-                    </span>
-                </a>
-            </div>
+        <a href="#">
+        <img class="img-fluid" src="{{ asset($populer->image) }}">
+        <h6>{{ $populer->name }}</h6>
+        @if ($populer->discount_price == NULL)
+            Rp {{ number_format($populer->price, 0, ',', '.') }}
+        @else
+            <del>Rp {{ number_format($populer->price, 0, ',', '.') }}</del> Rp {{ number_format($populer->discount_price, 0, ',', '.') }}
+        @endif
+        <span class="float-right">
+            <a class="btn btn-outline-secondary btn-sm" href="{{ route('add_to_cart',$populer->id)}}">Beli</a>
+        </span>
+        </a>
+        </div>
+
         </div>
         @endforeach
 
@@ -119,29 +120,32 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
         <div class="col-md-4 col-sm-6 mb-4">
         <div class="list-card bg-white h-100 rounded overflow-hidden position-relative shadow-sm">
             <div class="list-card-image">
-                <div class="star position-absolute"><span class="badge badge-success"><i class="icofont-star"></i> 3.1 (300+)</span></div>
+                <div class="star position-absolute"><span class="badge badge-success"><i class="icofont-star"></i> 4.9k (300+)</span></div>
                 <div class="favourite-heart text-danger position-absolute"><a href="#"><i class="icofont-heart"></i></a></div>
-                <div class="member-plan position-absolute"><span class="badge badge-dark">Promoted</span></div>
+                <div class="member-plan position-absolute"><span class="badge badge-dark">Promo Sell</span></div>
                 <a href="#">
                 <img src="{{ asset($bestseller->image) }}" class="img-fluid item-img">
                 </a>
             </div>
             <div class="p-3 position-relative">
                 <div class="list-card-body">
-                    <h6 class="mb-1"><a href="#" class="text-black">{{$bestseller->name}}</a></h6>
+                    <h6 class="mb-1"><a href="#" class="text-black">{{ $bestseller->name }}</a></h6>
                     <p class="text-gray mb-2">{{ $bestseller['city']['city_name'] }}</p>
 
                     <p class="text-gray time mb-0">
                         @if ($bestseller->discount_price == NULL)
-                        <a class="btn btn-link btn-sm text-black" href="#">${{$bestseller->price}}  </a>
-                    @else
-                    $<del>{{$bestseller->price}}</del>
-                    <a class="btn btn-link btn-sm text-black" href="#">${{$bestseller->discount_price}}  </a>
-
-                    @endif
+                            <a class="btn btn-link btn-sm text-black" href="#">
+                                Rp {{ number_format($bestseller->price, 0, ',', '.') }}
+                            </a>
+                        @else
+                            <del>Rp {{ number_format($bestseller->price, 0, ',', '.') }}</del>
+                            <a class="btn btn-link btn-sm text-black" href="#">
+                                Rp {{ number_format($bestseller->discount_price, 0, ',', '.') }}
+                            </a>
+                        @endif
                         <span class="float-right">
-                    <a class="btn btn-outline-secondary btn-sm" href="{{ route('add_to_cart',$bestseller->id)}}">ADD</a>
-                    </span>
+                            <a class="btn btn-outline-secondary btn-sm" href="{{ route('add_to_cart',$bestseller->id) }}">Beli</a>
+                        </span>
                     </p>
                 </div>
             </div>
@@ -155,20 +159,19 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
 
     @foreach ($menus as $menu)
     <div class="row">
-        <h5 class="mb-4 mt-3 col-md-12">{{ $menu->menu_name }} <small class="h6 text-black-50">{{ $menu->products->count() }} ITEMS</small></h5>
+        <h5 class="mb-4 mt-3 col-md-12">{{ $menu->menu_name }} <small class="h6 text-black-50">{{ $menu->products->count() }} Kue</small></h5>
         <div class="col-md-12">
         <div class="bg-white rounded border shadow-sm mb-4">
 
             @foreach ($menu->products as $product)
             <div class="menu-list p-3 border-bottom">
-                <a class="btn btn-outline-secondary btn-sm  float-right" href="{{ route('add_to_cart',$product->id)}}">ADD</a>
+                <a class="btn btn-outline-secondary btn-sm  float-right" href="{{ route('add_to_cart',$product->id)}}"> Beli </a>
 
                 <div class="media">
                     <img class="mr-3 rounded-pill" src="{{ asset($product->image) }}" alt="Generic placeholder image">
                     <div class="media-body">
-                    <h6 class="mb-1">{{$product->name}}</h6>
-                    <p class="text-gray mb-0">${{ $product->price }} ({{ $product->size ?? '' }} cm)</p>
-
+                        <h6 class="mb-1">{{$product->name}}</h6>
+                        <p class="text-gray mb-0">Rp {{ number_format($product->price, 0, ',', '.') }} ({{ $product->size ?? '' }} cm)</p>
                     </div>
                 </div>
             </div>
@@ -190,7 +193,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
 
                 <div class="item">
                     <img class="img-fluid" src="{{ asset($gallery->gallery_img) }}">
-                    <div class="position-absolute restaurant-slider-pics bg-dark text-white">{{ $index + 1 }} of {{ $gallerys->count() }} Photos</div>
+                    <div class="position-absolute restaurant-slider-pics bg-dark text-white">{{ $index + 1 }} of {{ $gallerys->count() }} Gambar</div>
                 </div>
                 @endforeach
 
@@ -208,7 +211,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
                 <div class="gmap_canvas"><iframe width="300" height="170" id="gmap_canvas" src="https://maps.google.com/maps?q=university%20of%20san%20francisco&t=&z=9&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></div>
             </div>
             </div>
-            <h5 class="mb-4">Restaurant Info</h5>
+            <h5 class="mb-4">Tentang Kami</h5>
             <p class="mb-3">{{ $client->address }}
 
             </p>
@@ -218,18 +221,18 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
             <span class="badge badge-success"> OPEN NOW </span>
             </p>
             <hr class="clearfix">
-            <p class="text-black mb-0">You can also check the 3D view by using our menue map clicking here &nbsp;&nbsp;&nbsp; <a class="text-info font-weight-bold" href="#">Venue Map</a></p>
+            <p class="text-black mb-0">Anda dapat menelusuri lokasi kami saat ini&nbsp;&nbsp;&nbsp; <a class="text-info font-weight-bold" href="#">Telusuri</a></p>
             <hr class="clearfix">
-            <h5 class="mt-4 mb-4">More Info</h5>
-            <p class="mb-3">Dal Makhani, Panneer Butter Masala, Kadhai Paneer, Raita, Veg Thali, Laccha Paratha, Butter Naan</p>
+            <h5 class="mt-4 mb-4">Informasi Tambahan</h5>
+            <p class="mb-3">Kue Nastar, Kue Kastengel, Kue Putri Salju, Kue Sagu Keju, Kue Lidah Kucing, Kue Cokelat, Kue Kopi</p>
             <div class="border-btn-main mb-4">
-            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Breakfast</a>
-            <a class="border-btn text-danger mr-2" href="#"><i class="icofont-close-circled"></i> No Alcohol Available</a>
-            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Vegetarian Only</a>
-            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Indoor Seating</a>
-            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Breakfast</a>
-            <a class="border-btn text-danger mr-2" href="#"><i class="icofont-close-circled"></i> No Alcohol Available</a>
-            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Vegetarian Only</a>
+            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Kue Manis</a>
+            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Bebas Gula</a>
+            <a class="border-btn text-danger mr-2" href="#"><i class="icofont-close-circled"></i> Tanpa Pengawet</a>
+            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Teman Ngemil</a>
+            <a class="border-btn text-success mr-2" href="#"><i class="icofont-check-circled"></i> Pilihan Lebaran</a>
+            <a class="border-btn text-danger mr-2" href="#"><i class="icofont-close-circled"></i> Tanpa Alkohol</a>
+            <a class="border-btn text-danger mr-2" href="#"><i class="icofont-close-circled"></i> Bebas Gluten</a>
             </div>
         </div>
     </div>
@@ -238,33 +241,33 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
 
                    <div class="tab-pane fade" id="pills-book" role="tabpanel" aria-labelledby="pills-book-tab">
                       <div id="book-a-table" class="bg-white rounded shadow-sm p-4 mb-5 rating-review-select-page">
-                         <h5 class="mb-4">Book A Table</h5>
+                         <h5 class="mb-4">Booking</h5>
                          <form>
                             <div class="row">
                                <div class="col-sm-6">
                                   <div class="form-group">
-                                     <label>Full Name</label>
-                                     <input class="form-control" type="text" placeholder="Enter Full Name">
+                                     <label>Nama</label>
+                                     <input class="form-control" type="text" placeholder="Enter your name">
                                   </div>
                                </div>
                                <div class="col-sm-6">
                                   <div class="form-group">
-                                     <label>Email Address</label>
-                                     <input class="form-control" type="text" placeholder="Enter Email address">
+                                     <label>Alamat Email</label>
+                                     <input class="form-control" type="text" placeholder="Enter your email">
                                   </div>
                                </div>
                             </div>
                             <div class="row">
                                <div class="col-sm-6">
                                   <div class="form-group">
-                                     <label>Mobile number</label>
-                                     <input class="form-control" type="text" placeholder="Enter Mobile number">
+                                     <label>Nomor Meja</label>
+                                     <input class="form-control" type="text" placeholder="Enter no meja">
                                   </div>
                                </div>
                                <div class="col-sm-6">
                                   <div class="form-group">
-                                     <label>Date And Time</label>
-                                     <input class="form-control" type="text" placeholder="Enter Date And Time">
+                                     <label>Waktu dan Tanggal</label>
+                                     <input class="form-control" type="text" placeholder="Enter tanggal dan waktu">
                                   </div>
                                </div>
                             </div>
@@ -511,7 +514,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
       @endphp
 
    <div class="gold-members p-2 border-bottom">
-         <p class="text-gray mb-0 float-right ml-2">${{ $details['price'] * $details['quantity'] }}</p>
+         <p class="text-gray mb-0 float-right ml-2">Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}</p>
          <span class="count-number float-right">
 
         <button class="btn btn-outline-secondary  btn-sm left dec" data-id="{{ $id }}" > <i class="icofont-minus"></i> </button>

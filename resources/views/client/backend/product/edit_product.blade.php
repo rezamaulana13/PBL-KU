@@ -84,16 +84,19 @@
 <div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
         <label for="example-text-input" class="form-label">Harga</label>
-        <input class="form-control" type="text" name="price"  id="example-text-input" value="{{ $product->price }}">
+        <input class="form-control rupiah" type="text" name="price" id="price"
+            value="{{ number_format($product->price, 0, ',', '.') }}">
     </div>
 </div>
 
 <div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
         <label for="example-text-input" class="form-label">Harga Diskon</label>
-        <input class="form-control" type="text" name="discount_price"  id="example-text-input" value="{{ $product->discount_price }}">
+        <input class="form-control rupiah" type="text" name="discount_price" id="discount_price"
+            value="{{ number_format($product->discount_price, 0, ',', '.') }}">
     </div>
 </div>
+
 
 <div class="col-xl-6 col-md-6">
     <div class="form-group mb-3">
@@ -213,6 +216,25 @@
             unhighlight : function(element, errorClass, validClass){
                 $(element).removeClass('is-invalid');
             },
+        });
+    });
+
+    // Fungsi format ke Rupiah
+    function formatRupiah(angka) {
+        return angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    // Event untuk setiap input bertipe rupiah
+    document.querySelectorAll('.rupiah').forEach(input => {
+        input.addEventListener('keyup', function(e) {
+            this.value = formatRupiah(this.value.replace(/\D/g, ""));
+        });
+    });
+
+    // Hapus titik sebelum submit agar tetap angka murni dikirim ke server
+    document.querySelector('form').addEventListener('submit', function() {
+        document.querySelectorAll('.rupiah').forEach(input => {
+            input.value = input.value.replace(/\./g, "");
         });
     });
 

@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Processing Order</h4>
+                    <h4 class="mb-sm-0 font-size-18">Pesanan Diproses</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
 
@@ -24,13 +24,13 @@
         <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
             <thead>
             <tr>
-                <th>Sl</th>
-                <th>Date</th>
+                <th>No</th>
+                <th>Tanggal</th>
                 <th>Invoice</th>
-                <th>Amount</th>
-                <th>Payment</th>
+                <th>Harga</th>
+                <th>Pembayaran</th>
                 <th>Status</th>
-                <th>Action </th>
+                <th>Aksi</th>
             </tr>
             </thead>
             <tbody>

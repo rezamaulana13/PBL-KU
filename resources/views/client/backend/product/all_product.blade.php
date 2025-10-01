@@ -46,32 +46,39 @@
 
 
             <tbody>
-           @foreach ($product as $key => $item)
+@foreach ($product as $key => $item)
 <tr>
     <td>{{ $key + 1 }}</td>
     <td><img src="{{ asset($item->image) }}" alt="" style="width: 70px; height:40px;"></td>
     <td>{{ $item->name }}</td>
-    <td>{{ $item->menu->menu_name ?? '-' }}</td> <!-- safe access -->
+    <td>{{ $item->menu->menu_name ?? '-' }}</td>
     <td>{{ $item->qty }}</td>
-    <td>{{ $item->price }}</td>
+
+    <!-- ✅ Harga Asli dalam Rupiah -->
+    <td>Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+
+    <!-- ✅ Diskon: Jika ada, tampilkan persentase + harga setelah diskon -->
     <td>
         @if ($item->discount_price == NULL)
-            <span class="badge bg-danger">No Discount</span>
+            <span class="badge bg-danger">Tidak Ada</span>
         @else
             @php
                 $amount = $item->price - $item->discount_price;
                 $discount = ($amount / $item->price) * 100;
             @endphp
-            <span class="badge bg-danger">{{ round($discount) }}%</span>
+            <span class="badge bg-danger">{{ round($discount) }}%</span><br>
+            <small>Rp {{ number_format($item->discount_price, 0, ',', '.') }}</small>
         @endif
     </td>
+
     <td>
         @if ($item->status == 1)
-            <span class="text-success"><b>Active</b></span>
+            <span class="text-success"><b>Aktif</b></span>
         @else
-            <span class="text-danger"><b>InActive</b></span>
+            <span class="text-danger"><b>Tidak Aktif</b></span>
         @endif
     </td>
+
     <td>
         <a href="{{ route('edit.product', $item->id) }}" class="btn btn-info waves-effect waves-light">
             <i class="fas fa-edit"></i>
@@ -84,7 +91,8 @@
     </td>
 </tr>
 @endforeach
-            </tbody>
+</tbody>
+
         </table>
 
                     </div>

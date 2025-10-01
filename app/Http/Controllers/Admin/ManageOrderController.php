@@ -29,20 +29,28 @@ class ManageOrderController extends Controller
         return view('admin.backend.order.processing_order',compact('allData'));
     }
     //End Method
-    public function DeliverdOrder(){
-        $allData = Order::where('status','deliverd')->orderBy('id','desc')->get();
-        return view('admin.backend.order.deliverd_order',compact('allData'));
+    public function DeliveredOrder(){
+        $allData = Order::where('status','delivered')->orderBy('id','desc')->get();
+        return view('admin.backend.order.delivered_order',compact('allData'));
+    }
+    public function CancelledOrder(){
+        $allData = Order::where('status','cancelled')->orderBy('id','desc')->get();
+        return view('admin.backend.order.cancelled_order',compact('allData'));
     }
     //End Method
+
     public function AdminOrderDetails($id){
-        $order = Order::with('user')->where('id',$id)->first();
-        $orderItem = OrderItem::with('product')->where('order_id',$id)->orderBy('id','desc')->get();
-        $totalPrice = 0;
-        foreach($orderItem as $item){
-            $totalPrice += $item->price * $item->qty;
-        }
-        return view('admin.backend.order.admin_order_details',compact('order','orderItem','totalPrice'));
+    $order = Order::with('user')->where('id',$id)->first();
+    $orderItem = OrderItem::with('product')->where('order_id',$id)->orderBy('id','desc')->get();
+    $totalPrice = 0;
+    foreach($orderItem as $item){
+        $totalPrice += $item->price * $item->qty;
+    }
+    $formattedTotalPrice = $this->formatRupiah($totalPrice);
+
+    return view('admin.backend.order.admin_order_details',compact('order','orderItem','totalPrice', 'formattedTotalPrice'));
     } //End Method
+
     public function PendingToConfirm($id){
         Order::find($id)->update(['status' => 'confirm']);
         $notification = array(
@@ -62,12 +70,12 @@ class ManageOrderController extends Controller
     }
     //End Method
     public function ProcessingToDiliverd($id){
-        Order::find($id)->update(['status' => 'deliverd']);
+        Order::find($id)->update(['status' => 'delivered']);
         $notification = array(
             'message' => 'Order Processing Successfully',
             'alert-type' => 'success'
         );
-        return redirect()->route('deliverd.order')->with($notification);
+        return redirect()->route('delivered.order')->with($notification);
     }
     //End Method
     public function AllClientOrders(){
@@ -94,17 +102,18 @@ class ManageOrderController extends Controller
         $userId = Auth::user()->id;
         $allUserOrder = Order::where('user_id',$userId)->orderBy('id','desc')->get();
         return view('frontend.dashboard.order.order_list',compact('allUserOrder'));
-    }
-      //End Method
-      public function UserOrderDetails($id){
+    }//End Method
+     public function UserOrderDetails($id){
         $order = Order::with('user')->where('id',$id)->where('user_id',Auth::id())->first();
         $orderItem = OrderItem::with('product')->where('order_id',$id)->orderBy('id','desc')->get();
         $totalPrice = 0;
         foreach($orderItem as $item){
             $totalPrice += $item->price * $item->qty;
         }
-        return view('frontend.dashboard.order.order_details',compact('order','orderItem','totalPrice'));
+        $formattedTotalPrice = $this->formatRupiah($totalPrice);
+        return view('frontend.dashboard.order.order_details',compact('order','orderItem','totalPrice', 'formattedTotalPrice'));
     }
+
      //End Method
      public function UserInvoiceDownload($id){
         $order = Order::with('user')->where('id',$id)->where('user_id',Auth::id())->first();
@@ -121,27 +130,33 @@ class ManageOrderController extends Controller
     }
      //End Method
 
+     private function formatRupiah($angka)
+    {
+        return 'Rp ' . number_format($angka, 0, ',', '.');
+    }
+
     // 👉 fitur baru: pembatalan pesanan user
     public function UserOrderCancel($id){
-        $order = Order::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+    $order = Order::where('id', $id)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
 
-        if (in_array($order->status, ['Pending', 'processing'])) {
-            $order->status = 'canceled';
-            $order->save();
+    if (in_array(strtolower($order->status), ['pending', 'processing', 'confirm'])) {
+        $order->status = 'cancelled'; // pakai 2 L
+        $order->save();
 
-            $notification = array(
-                'message' => 'Pesanan berhasil dibatalkan.',
-                'alert-type' => 'success'
-            );
-        } else {
-            $notification = array(
-                'message' => 'Pesanan tidak bisa dibatalkan.',
-                'alert-type' => 'error'
-            );
-        }
-
-        return redirect()->route('user.order.list')->with($notification);
+        $notification = [
+            'message' => 'Pesanan berhasil dibatalkan.',
+            'alert-type' => 'success'
+        ];
+    } else {
+        $notification = [
+            'message' => 'Pesanan tidak bisa dibatalkan.',
+            'alert-type' => 'error'
+        ];
     }
+
+    return redirect()->route('user.order.list')->with($notification);
+}
+
 }

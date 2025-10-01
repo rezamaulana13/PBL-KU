@@ -45,7 +45,7 @@
                       <a href="#">
                          <img class="img-fluid" src="{{ asset($product->image ) }}" alt="">
                          <h6>{{ Str::limit($product->name, 8)  }}</h6>
-                         <p>${{ $product->price }}</p>
+                         <p>Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                       </a>
                    </div>
                 </div>

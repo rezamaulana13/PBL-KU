@@ -87,18 +87,17 @@
 
 <div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Harga Diskon</label>
-        <input class="form-control" type="text" name="discount_price"  id="example-text-input">
+        <label for="price" class="form-label">Harga</label>
+        <input class="form-control" type="text" name="price" id="price" onkeyup="formatRupiah(this)">
     </div>
 </div>
 
-<div class="col-xl-6 col-md-6">
+<div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Ukuran</label>
-        <input class="form-control" type="text" name="size"  id="example-text-input">
+        <label for="discount_price" class="form-label">Harga Diskon</label>
+        <input class="form-control" type="text" name="discount_price" id="discount_price" onkeyup="formatRupiah(this)">
     </div>
 </div>
-
 
 <div class="col-xl-6 col-md-6">
     <div class="form-group mb-3">
@@ -219,6 +218,16 @@
         });
     });
 
+    function formatRupiah(input) {
+    let value = input.value.replace(/[^,\d]/g, ''); // Hapus semua selain angka
+    let formatted = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+    }).format(value);
+
+    input.value = formatted;
+}
 </script>
 
 

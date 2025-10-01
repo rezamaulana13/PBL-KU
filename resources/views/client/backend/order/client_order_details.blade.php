@@ -127,24 +127,12 @@
             <table class="table">
                 <tbody>
                     <tr>
-                        <td class="col-md-1">
-                            <label>Image</label>
-                        </td>
-                        <td class="col-md-1">
-                            <label>Product Name</label>
-                        </td>
-                        <td class="col-md-1">
-                            <label>Restruatnt Name </label>
-                        </td>
-                        <td class="col-md-1">
-                            <label>Product Code</label>
-                        </td>
-                        <td class="col-md-1">
-                            <label>Quantity</label>
-                        </td>
-                        <td class="col-md-1">
-                            <label>Price</label>
-                        </td>
+                        <td class="col-md-1"><label>Image</label></td>
+                        <td class="col-md-1"><label>Nama Produk</label></td>
+                        <td class="col-md-1"><label>Nama Penjual</label></td>
+                        <td class="col-md-1"><label>Kode Produk</label></td>
+                        <td class="col-md-1"><label>Jumlah</label></td>
+                        <td class="col-md-1"><label>Harga</label></td>
                     </tr>
     @foreach ($orderItem as $item)
     <tr>
@@ -154,36 +142,25 @@
             </label>
         </td>
         <td class="col-md-2">
-            <label>
-                {{ $item->product->name }}
-            </label>
+            <label>{{ $item->product->name }}</label>
         </td>
-        @if ($item->client_id == NULL)
+
         <td class="col-md-2">
             <label>
-               Owner
+                {{ $item->client_id == NULL ? 'Owner' : $item->product->client->name }}
             </label>
         </td>
-        @else
+
         <td class="col-md-2">
-            <label>
-                {{ $item->product->client->name }}
-            </label>
+            <label>{{ $item->product->code }}</label>
         </td>
-        @endif
         <td class="col-md-2">
-            <label>
-                {{ $item->product->code }}
-            </label>
+            <label>{{ $item->qty }}</label>
         </td>
         <td class="col-md-2">
             <label>
-                {{ $item->qty }}
-            </label>
-        </td>
-        <td class="col-md-2">
-            <label>
-                {{ $item->price }} <br> Total = $ {{ $item->price * $item->qty }}
+                Rp {{ number_format($item->price, 0, ',', '.') }} <br>
+                Total = Rp {{ number_format($item->price * $item->qty, 0, ',', '.') }}
             </label>
         </td>
     </tr>
@@ -191,7 +168,9 @@
                 </tbody>
             </table>
     <div>
-        <h4>Total Price: $ {{ $totalPrice }}</h4>
+        <h4>
+            Total Harga: <strong>Rp {{ number_format($totalPrice, 0, ',', '.') }}</strong>
+        </h4>
     </div>
 
         </div>
@@ -199,12 +178,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
 
     </div> <!-- container-fluid -->
 </div>

@@ -94,15 +94,15 @@
 
 <div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Price</label>
-        <input class="form-control" type="text" name="price"  id="example-text-input" value="{{ $product->price }}">
+        <label class="form-label">Harga</label>
+        <input class="form-control rupiah-input" type="text" name="price" value="{{ $product->price }}">
     </div>
 </div>
 
 <div class="col-xl-4 col-md-6">
     <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Discount Price</label>
-        <input class="form-control" type="text" name="discount_price"  id="example-text-input" value="{{ $product->discount_price }}">
+        <label class="form-label">Harga Diskon</label>
+        <input class="form-control rupiah-input" type="text" name="discount_price" value="{{ $product->discount_price }}">
     </div>
 </div>
 
@@ -226,6 +226,39 @@
             },
         });
     });
+
+    document.querySelectorAll('.rupiah-input').forEach(function(input) {
+    // Format awal saat halaman dimuat
+    input.value = formatRupiah(input.value);
+
+    input.addEventListener('keyup', function(e) {
+        this.value = formatRupiah(this.value);
+    });
+});
+
+// Fungsi format Rupiah
+function formatRupiah(angka, prefix) {
+    let number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa  = split[0].length % 3,
+        rupiah  = split[0].substr(0, sisa),
+        ribuan  = split[0].substr(sisa).match(/\d{3}/gi);
+
+    if(ribuan){
+        separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+    }
+
+    rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix === undefined ? rupiah : (rupiah ? 'Rp ' + rupiah : '');
+}
+
+// Bersihkan format untuk dikirim ke backend
+document.querySelector('form').addEventListener('submit', function() {
+    document.querySelectorAll('.rupiah-input').forEach(function(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    });
+});
 
 </script>
 

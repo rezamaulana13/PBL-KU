@@ -18,14 +18,12 @@ class OrderController extends Controller
     public function CashOrder(Request $request)
     {
         // Validasi data form
-        $request->validate([
+        $validated = $request->validate([
             'name'    => 'required',
             'email'   => 'required',
             'phone'   => 'required',
             'address' => 'required',
         ]);
-
-        // Hitung total belanja dari cart
         $cart = Session::get('cart', []);
         $totalAmount = collect($cart)->sum(fn($c) => $c['price'] * $c['quantity']);
 
@@ -101,8 +99,8 @@ class OrderController extends Controller
         $token = $request->stripeToken;
 
         $charge = \Stripe\Charge::create([
-            'amount'      => $totalAmount * 100, // cent
-            'currency'    => 'usd',
+            'amount'      => $totalAmount, // cent
+            'currency'    => 'idr',
             'description' => 'EasyFood Delivery',
             'source'      => $token,
             'metadata'    => ['order_id' => '6735'],
@@ -151,11 +149,16 @@ class OrderController extends Controller
         ]);
     }
 
+    function formatRupiah($angka){
+        return "Rp" . number_format($angka, 0, ',', '.');
+    }
+
+    
     /**
      * Cancel Order
      */
     // Pastikan ini adalah fungsi yang Anda gunakan
-public function CancelOrder($id)
+public function CancellOrder($id)
 {
     $order = Order::where('id', $id)
         ->where('user_id', Auth::id())

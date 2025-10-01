@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Order Details</h4>
+                    <h4 class="mb-sm-0 font-size-18">Detail Pesanan</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
@@ -26,7 +26,7 @@
     <div class="col">
         <div class="card">
          <div class="card-header">
-            <h4>Shipping Details</h4>
+            <h4>Detail Pengiriman</h4>
          </div>
 
             <div class="card-body">
@@ -35,23 +35,23 @@
 
         <tbody>
             <tr>
-                <th width="50%">Shipping Name: </th>
+                <th width="50%">Nama Pengirim: </th>
                 <td>{{ $order->name }}</td>
             </tr>
             <tr>
-                <th width="50%">Shipping Phone: </th>
+                <th width="50%">Telepon Pengirim: </th>
                 <td>{{ $order->phone }}</td>
             </tr>
             <tr>
-                <th width="50%">Shipping Email: </th>
+                <th width="50%">Email Pengirim: </th>
                 <td>{{ $order->email }}</td>
             </tr>
             <tr>
-                <th width="50%">Shipping Address: </th>
+                <th width="50%">Alamat Pengiriman: </th>
                 <td>{{ $order->address }}</td>
             </tr>
             <tr>
-                <th width="50%">Order Date: </th>
+                <th width="50%">Tanggal Pesanan: </th>
                 <td>{{ $order->order_date }}</td>
             </tr>
 
@@ -66,7 +66,7 @@
     <div class="col">
         <div class="card">
          <div class="card-header">
-            <h4>Order Details
+            <h4>Detail Pesanan
             <span class="text-danger">Invoice: {{ $order->invoice_no }}</span></h4>
          </div>
 
@@ -76,11 +76,11 @@
 
         <tbody>
             <tr>
-                <th width="50%"> Name: </th>
+                <th width="50%"> Nama: </th>
                 <td>{{ $order->user->name }}</td>
             </tr>
             <tr>
-                <th width="50%"> Phone: </th>
+                <th width="50%"> Telepon: </th>
                 <td>{{ $order->user->phone }}</td>
             </tr>
             <tr>
@@ -88,11 +88,11 @@
                 <td>{{ $order->user->email }}</td>
             </tr>
             <tr>
-                <th width="50%">Payment Type: </th>
+                <th width="50%">Jenis Pembayaran: </th>
                 <td>{{ $order->payment_method }}</td>
             </tr>
             <tr>
-                <th width="50%">Transx Id: </th>
+                <th width="50%">ID Transaksi: </th>
                 <td>{{ $order->transaction_id }}</td>
             </tr>
             <tr>
@@ -100,11 +100,11 @@
                 <td class="text-danger">{{ $order->invoice_no }}</td>
             </tr>
             <tr>
-                <th width="50%">Order Amount: </th>
-                <td>${{ $order->amount }}</td>
+                <th width="50%">Jumlah Pesanan: </th>
+                <td>Rp {{ number_format($order->amount, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <th width="50%">Order Status: </th>
+                <th width="50%">Status Pesanan: </th>
                 <td><span class="badge bg-success">{{ $order->status }}</span></td>
             </tr>
 
@@ -112,11 +112,11 @@
     <th width="50%"> </th>
     <td>
         @if($order->status == 'Pending')
-        <a href="{{ route('pending_to_confirm',$order->id) }}" class="btn btn-block btn-success" id="confirmOrder">Confirm Order</a>
+        <a href="{{ route('pending_to_confirm',$order->id) }}" class="btn btn-block btn-success" id="confirmOrder">Konfirmasi Pesanan</a>
         @elseif ($order->status == 'confirm')
-        <a href="{{ route('confirm_to_processing',$order->id) }}" class="btn btn-block btn-success" id="processingOrder">Processing Order</a>
+        <a href="{{ route('confirm_to_processing',$order->id) }}" class="btn btn-block btn-success" id="processingOrder">Pesanan Diproses</a>
         @elseif ($order->status == 'processing')
-        <a href="{{ route('processing_to_deliverd',$order->id) }}" class="btn btn-block btn-success" id="deliverdOrder">Deliverd Order</a>
+        <a href="{{ route('processing_to_deliverd',$order->id) }}" class="btn btn-block btn-success" id="deliverdOrder">Pesanan Dikirim</a>
         @endif
     </td>
 </tr>
@@ -141,22 +141,22 @@
                 <tbody>
                     <tr>
                         <td class="col-md-1">
-                            <label>Image</label>
+                            <label>Gambar</label>
                         </td>
                         <td class="col-md-1">
-                            <label>Product Name</label>
+                            <label>Nama Produk</label>
                         </td>
                         <td class="col-md-1">
-                            <label>Restruatnt Name </label>
+                            <label>Nama Restoran</label>
                         </td>
                         <td class="col-md-1">
-                            <label>Product Code</label>
+                            <label>Kode Produk</label>
                         </td>
                         <td class="col-md-1">
-                            <label>Quantity</label>
+                            <label>Jumlah</label>
                         </td>
                         <td class="col-md-1">
-                            <label>Price</label>
+                            <label>Harga</label>
                         </td>
                     </tr>
     @foreach ($orderItem as $item)
@@ -174,7 +174,7 @@
         @if ($item->client_id == NULL)
         <td class="col-md-2">
             <label>
-               Owner
+               Pemilik
             </label>
         </td>
         @else
@@ -196,7 +196,7 @@
         </td>
         <td class="col-md-2">
             <label>
-                {{ $item->price }} <br> Total = $ {{ $item->price * $item->qty }}
+                 Rp {{ number_format($item->price, 0, ',', '.') }} <br> Total = Rp {{ number_format($item->price * $item->qty, 0, ',', '.') }}
             </label>
         </td>
     </tr>
@@ -204,7 +204,7 @@
                 </tbody>
             </table>
     <div>
-        <h4>Total Price: $ {{ $totalPrice }}</h4>
+        <h4>Total Harga: Rp {{ number_format($totalPrice, 0, ',', '.') }}</h4>
     </div>
 
         </div>
@@ -212,18 +212,8 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
 
     </div> <!-- container-fluid -->
 </div>
-
-
-
-
 
 @endsection

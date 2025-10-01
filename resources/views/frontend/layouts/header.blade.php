@@ -84,10 +84,16 @@ Pesanan             <span class="badge badge-success">{{ count((array) session('
                 @if (session('cart'))
                 @foreach (session('cart') as $id => $details)
                 @php
-                   $total += $details['price'] * $details['quantity']
+                    $total += $details['price'] * $details['quantity'];
                 @endphp
 
-                <p class="mb-2"><i class="icofont-ui-press text-danger food-item"></i>{{ $details['name'] }} x {{  $details['quantity'] }}   <span class="float-right text-secondary">${{ $details['price'] * $details['quantity'] }}</span></p>
+                <p class="mb-2">
+                    <i class="icofont-ui-press text-danger food-item"></i>
+                    {{ $details['name'] }} x {{  $details['quantity'] }}
+                    <span class="float-right text-secondary">
+                        Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}
+                    </span>
+                </p>
                 @endforeach
                 @endif
 

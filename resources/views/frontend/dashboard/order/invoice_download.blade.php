@@ -112,7 +112,7 @@
         <td align="center">{{ $item->product->code }}</td>
         <td align="center">{{ $item->qty }}</td>
         <td align="center">{{ $item->product->client->name }}</td>
-        <td align="center">{{ $item->price }}</td>
+        <td align="center">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
       </tr>
      @endforeach
     </tbody>
@@ -121,10 +121,9 @@
   <table width="100%" style=" padding:0 10px 0 10px;">
     <tr>
         <td align="right" >
-            <h2><span style="color: green;">Subtotal:</span> Subtotal</h2>
-            <h2><span style="color: green;">Total:</span>
-                {{ $totalPrice }}</h2>
-            {{-- <h2><span style="color: green;">Full Payment PAID</h2> --}}
+            <h2><span style="color: green;">Subtotal:</span> Rp {{ number_format($totalPrice, 0, ',', '.') }}</h2>
+            <h2><span style="color: green;">Total:</span> Rp {{ number_format($totalPrice, 0, ',', '.') }}</h2>
+            {{-- <h2><span style="color: green;">Full Payment PAID</h2> }}
         </td>
     </tr>
   </table>

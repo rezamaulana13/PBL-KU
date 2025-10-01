@@ -179,12 +179,12 @@
    @if (session('cart'))
       @foreach (session('cart') as $id => $details)
       @php
-         $total += $details['price'] * $details['quantity']
-      @endphp
+        $total += $details['price'] * $details['quantity'];
+        @endphp
 
-   <div class="gold-members p-2 border-bottom">
-         <p class="text-gray mb-0 float-right ml-2">${{ $details['price'] * $details['quantity'] }}</p>
-         <span class="count-number float-right">
+        <div class="gold-members p-2 border-bottom">
+            <p class="text-gray mb-0 float-right ml-2">Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}</p>
+        <span class="count-number float-right">
 
         <button class="btn btn-outline-secondary  btn-sm left dec" data-id="{{ $id }}" > <i class="icofont-minus"></i> </button>
 

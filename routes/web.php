@@ -43,12 +43,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/user/order/list', 'UserOrderList')->name('user.order.list');
         Route::get('/user/order/details/{id}', 'UserOrderDetails')->name('user.order.details');
         Route::get('/user/invoice/download/{id}', 'UserInvoiceDownload')->name('user.invoice.download');
-        // 👉 route baru: pembatalan pesanan
-        Route::patch('/user/order/cancel/{id}', 'UserOrderCancel')->name('user.order.cancel');
-
+        // Rute yang hilang ada di sini
+        Route::post('/user/order/cancel/{id}', 'UserOrderCancel')->name('user.order.cancel');
     });
 });
-
 
 require __DIR__.'/auth.php';
 
@@ -136,7 +134,8 @@ Route::middleware('admin')->group(function () {
         Route::get('/pending/order', 'PendingOrder')->name('pending.order');
         Route::get('/confirm/order', 'ConfirmOrder')->name('confirm.order');
         Route::get('/processing/order', 'ProcessingOrder')->name('processing.order');
-        Route::get('/deliverd/order', 'DeliverdOrder')->name('deliverd.order');
+        Route::get('/delivered/order', 'DeliveredOrder')->name('delivered.order');
+        Route::get('/cancelled/order', 'CancelledOrder')->name('cancelled.order');
 
         Route::get('/admin/order/details/{id}', 'AdminOrderDetails')->name('admin.order.details');
 
@@ -144,7 +143,7 @@ Route::middleware('admin')->group(function () {
     Route::controller(ManageOrderController::class)->group(function(){
         Route::get('/pending_to_confirm/{id}', 'PendingToConfirm')->name('pending_to_confirm');
         Route::get('/confirm_to_processing/{id}', 'ConfirmToProcessing')->name('confirm_to_processing');
-        Route::get('/processing_to_deliverd/{id}', 'ProcessingToDiliverd')->name('processing_to_deliverd');
+        Route::get('/processing_to_delivered/{id}', 'ProcessingToDiliverd')->name('processing_to_delivered');
     });
 
     Route::controller(ReportController::class)->group(function(){
