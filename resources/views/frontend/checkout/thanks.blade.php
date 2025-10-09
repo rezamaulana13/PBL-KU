@@ -1,5 +1,5 @@
 @extends('frontend.dashboard.dashboard')
-@section('dashboard')
+@section('user')
 
 <section class="section pt-5 pb-5 osahan-not-found-page">
     <div class="container">

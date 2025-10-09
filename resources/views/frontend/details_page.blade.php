@@ -1,5 +1,5 @@
 @extends('frontend.dashboard.dashboard')
-@section('dashboard')
+@section('user')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 @php
@@ -423,6 +423,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
 
       <h5 class="mb-4">Masukkan Komentar</h5>
       <p class="mb-2">Rating Pesanan</p>
+      
       <form method="post" action="{{ route('store.review') }}" enctype="multipart/form-data">
    @csrf
    <input type="hidden" name="client_id" value="{{ $client->id }}">

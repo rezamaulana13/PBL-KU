@@ -1,5 +1,5 @@
 @extends('frontend.dashboard.dashboard')
-@section('dashboard')
+@section('user')
 
 @php
     $id = Auth::user()->id;

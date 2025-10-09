@@ -1,92 +1,75 @@
 @extends('frontend.dashboard.dashboard')
-@section('dashboard')
+
+{{-- Pastikan ini sama dengan @yield di Master Layout Anda --}}
+@section('user')
 
 @php
-    $id = Auth::user()->id;
-    $profileData = App\Models\User::find($id);
+    // Cukup gunakan Auth::user() untuk efisiensi
+    $profileData = Auth::user();
 @endphp
 
-<section class="section pt-4 pb-4 osahan-account-page">
-    <div class="container">
-       <div class="row">
+{{-- HILANGKAN: <section class="section pt-4 pb-4 osahan-account-page"> --}}
+{{-- HILANGKAN: <div class="container"> --}}
+{{-- HILANGKAN: <div class="row"> (Jika sudah ada di Master Layout) --}}
 
-        @include('frontend.dashboard.sidebar')
-
+@include('frontend.dashboard.sidebar')
 
 <div class="col-md-9">
     <div class="osahan-account-page-right rounded shadow-sm bg-white p-4 h-100">
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-            <h4 class="font-weight-bold mt-0 mb-4">Change Password   </h4>
 
+        <h4 class="font-weight-bold mt-0 mb-4 border-bottom pb-2">Ubah Kata Sandi</h4>
 
-    <div class="bg-white card mb-4 order-list shadow-sm">
-        <div class="gold-members p-4">
+        <div class="bg-white card order-list shadow-sm">
+            <div class="gold-members p-4">
 
-            <form action="{{ route('user.password.update') }}" method="post" enctype="multipart/form-data">
-                @csrf
+                <form action="{{ route('user.password.update') }}" method="post">
+                    @csrf
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div>
-                        <div class="mb-6">
-                            <label for="example-text-input" class="form-label">Password Lama</label>
-                            <input class="form-control @error('old_password') is-invalid @enderror" type="password" name="old_password" id="old_password">
-                            @error('old_password')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-4">
+                                <label for="old_password" class="form-label">Password Lama</label>
+                                <input class="form-control @error('old_password') is-invalid @enderror"
+                                       type="password" name="old_password" id="old_password">
+                                @error('old_password')
+                                    <span class="text-danger small mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="new_password" class="form-label">Password Baru</label>
+                                <input class="form-control @error('new_password') is-invalid @enderror"
+                                       type="password" name="new_password" id="new_password">
+                                @error('new_password')
+                                    <span class="text-danger small mt-1">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="new_password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                                <input class="form-control"
+                                       type="password" name="new_password_confirmation" id="new_password_confirmation">
+                            </div>
+
+                            {{-- PERBAIKAN TOMBOL DI SINI --}}
+                            <div class="mt-4 pt-2">
+    <button type="submit" class="btn btn-primary btn-lg shadow-lg fw-bold">
+        <i class="fas fa-save me-2"></i> Simpan
+    </button>
+</div>
+
                         </div>
-
-                        <div class="mb-6">
-                            <label for="example-text-input" class="form-label">New Password</label>
-                            <input class="form-control @error('new_password') is-invalid @enderror" type="password" name="new_password" id="new_password">
-                            @error('new_password')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-6">
-                            <label for="example-text-input" class="form-label">Confirm New Password</label>
-                            <input class="form-control" type="password" name="new_password_confirmation" id="new_password_confirmation">
-                        </div><br>
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">Save Changes</button>
                     </div>
-                </div>
-
-
+                </form>
             </div>
-            </form>
-
-        </div>
-    </div>
-
-
-
         </div>
 
-
-
-
-    </div>
     </div>
 </div>
-       </div>
-    </div>
- </section>
 
- <script type="text/javascript">
-    $(document).ready(function(){
-        $('#image').change(function(e){
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $('#showImage').attr('src',e.target.result);
-            }
-            reader.readAsDataURL(e.target.files['0']);
-        })
-    })
-
+{{-- Skrip JavaScript --}}
+<script type="text/javascript">
+    // Hapus skrip image jika tidak relevan untuk ganti password.
 </script>
-
-
 
 @endsection

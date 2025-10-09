@@ -1,138 +1,218 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Invoice</title>
+    <title>Invoice - {{ $order->invoice_no }}</title>
 
-<style type="text/css">
-    * {
-        font-family: Verdana, Arial, sans-serif;
-    }
-    table{
-        font-size: x-small;
-    }
-    tfoot tr td{
-        font-weight: bold;
-        font-size: x-small;
-    }
-    .gray {
-        background-color: lightgray
-    }
-    .font{
-      font-size: 15px;
-    }
-    .authority {
-        /*text-align: center;*/
-        float: right
-    }
-    .authority h5 {
-        margin-top: -10px;
-        color: green;
-        /*text-align: center;*/
-        margin-left: 35px;
-    }
-    .thanks p {
-        color: green;;
-        font-size: 16px;
-        font-weight: normal;
-        font-family: serif;
-        margin-top: 20px;
-    }
-</style>
+    <style type="text/css">
+        /* Reset & Font */
+        * {
+            font-family: 'Helvetica Neue', Arial, sans-serif; /* Font lebih modern */
+            line-height: 1.5;
+        }
+        body {
+            color: #444444; /* Darker Gray for readability */
+            font-size: 10px;
+        }
+        table {
+            width: 100%;
+            font-size: 10px;
+            border-collapse: collapse;
+        }
+
+        /* Colors & Branding */
+        .accent-navy {
+            color: #003366; /* Navy Blue Accent */
+        }
+        .accent-gold {
+            color: #B8860B; /* Gold Accent */
+        }
+        .bg-navy {
+            background-color: #003366;
+            color: white;
+        }
+        .bg-light-gray {
+            background-color: #F8F8F8;
+        }
+        .logo-text {
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        /* Layout & Typography */
+        .header-block {
+            padding: 20px;
+            border-bottom: 3px solid #003366; /* Garis pemisah tegas */
+        }
+        .info-label {
+            color: #888888;
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+        .info-value {
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+        .total-final {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .status-pill {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #28A745; /* Success Green */
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+
+        /* Table Produk */
+        .product-table th {
+            padding: 10px;
+            text-align: left;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+        .product-table td {
+            padding: 8px 10px;
+            border-bottom: 1px dashed #DDDDDD;
+        }
+    </style>
 
 </head>
 <body>
 
-  <table width="100%" style="background: #F7F7F7; padding:0 20px 0 20px;">
-    <tr>
-        <td valign="top">
-          <!-- {{-- <img src="" alt="" width="150"/> --}} -->
-          <h2 style="color: rgb(218, 233, 7); font-size: 26px;"><strong>RaraCookies</strong></h2>
-        </td>
-        <td align="right">
-            <pre class="font" >
-               RaraCookies Head Office
-               Email:raracookies@gmail.com <br>
-               Mob: 1245454545 <br>
-               Eka Mayasari #1 <br>
+    <table width="100%" class="header-block">
+        <tr>
+            <td valign="top" width="50%">
+                <div class="logo-text accent-gold">RaraCookies</div>
+                <div style="font-size: 14px; font-weight: bold; margin-top: 5px;" class="accent-navy">INVOICE PEMBELIAN</div>
+            </td>
+            <td align="right" width="50%">
+                <div class="info-label">DARI</div>
+                <div class="info-value">RaraCookies Head Office</div>
+                <div style="font-size: 10px;">
+                    Eka Mayasari No. 1, Banyuwangi
+                    <br>Email: raracookies@gmail.com
+                    <br>Telp: +62 812 4545 4545
+                </div>
+            </td>
+        </tr>
+    </table>
 
-            </pre>
-        </td>
-    </tr>
+    <table width="100%" style="margin-top: 25px;">
+        <tr>
+            <td width="45%" style="padding-right: 20px; border-right: 1px solid #EEEEEE;">
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 10px;" class="accent-navy">DETAIL INVOICE</div>
+                <table width="100%">
+                    <tr>
+                        <td width="30%" class="info-label">INVOICE NO</td>
+                        <td width="70%" class="info-value accent-navy">#{{ $order->invoice_no }}</td>
+                    </tr>
+                    <tr><td colspan="2" style="padding: 2px 0;"></td></tr> <tr>
+                        <td class="info-label">TANGGAL</td>
+                        <td class="info-value">{{ $order->order_date }}</td>
+                    </tr>
+                    <tr><td colspan="2" style="padding: 2px 0;"></td></tr>
+                    <tr>
+                        <td class="info-label">PEMBAYARAN</td>
+                        <td class="info-value">{{ $order->payment_method }}</td>
+                    </tr>
+                    <tr><td colspan="2" style="padding: 2px 0;"></td></tr>
+                    <tr>
+                        <td class="info-label">STATUS</td>
+                        <td><span class="status-pill">{{ $order->status }}</span></td>
+                    </tr>
+                </table>
+            </td>
 
-  </table>
+            <td width="55%" style="padding-left: 20px;">
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 10px;" class="accent-navy">INFO PELANGGAN & KIRIM</div>
+                <table width="100%">
+                    <tr>
+                        <td width="30%" class="info-label">NAMA</td>
+                        <td width="70%" class="info-value">{{ $order->name }}</td>
+                    </tr>
+                    <tr><td colspan="2" style="padding: 2px 0;"></td></tr>
+                    <tr>
+                        <td class="info-label">EMAIL/HP</td>
+                        <td class="info-value">{{ $order->email }} / {{ $order->phone }}</td>
+                    </tr>
+                    <tr><td colspan="2" style="padding: 2px 0;"></td></tr>
+                    <tr>
+                        <td class="info-label" valign="top">ALAMAT KIRIM</td>
+                        <td style="font-size: 11px;">{{ $order->address }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
+    <div style="margin-top: 35px; font-size: 14px; font-weight: bold;" class="accent-navy">RINCIAN PRODUK</div>
 
-  <table width="100%" style="background:white; padding:2px;"></table>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="product-table" style="margin-top: 8px;">
+        <thead class="bg-navy">
+            <tr>
+                <th width="5%" style="color: white; padding-left: 15px;">#</th>
+                <th width="30%" style="color: white;">Nama Produk</th>
+                <th width="15%" style="color: white;">Kode</th>
+                <th width="10%" style="color: white; text-align: center;">Qty</th>
+                <th width="25%" style="color: white;">Toko</th>
+                <th width="15%" style="color: white; text-align: right; padding-right: 15px;">Total Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($orderItem as $index => $item)
+            <tr class="bg-light-gray" style="background-color: {{ $index % 2 == 0 ? '#FFFFFF' : '#F8F8F8' }};">
+                <td align="center" style="padding-left: 15px;">{{ $index + 1 }}</td>
+                <td>{{ $item->product->name }}</td>
+                <td>{{ $item->product->code }}</td>
+                <td align="center">{{ $item->qty }}</td>
+                <td>{{ $item->product->client->name }}</td>
+                <td align="right" style="font-weight: bold; padding-right: 15px;">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-  <table width="100%" style="background: #F7F7F7; padding:0 5 0 5px;" class="font">
-    <tr>
-        <td>
-          <p class="font" style="margin-left: 20px;">
-           <strong>Nama:</strong> {{ $order->name }} <br>
-           <strong>Email:</strong> {{ $order->email }} <br>
-           <strong>No.Hp:</strong> {{ $order->phone }} <br>
-           <strong>Alamat:</strong> {{ $order->address }}
+    <table width="100%" style="margin-top: 30px;">
+        <tr>
+            <td width="60%" valign="top">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 20px;" class="accent-navy">
+                    Terima Kasih atas kepercayaan Anda pada RaraCookies!
+                </div>
 
-         </p>
-        </td>
-        <td>
-          <p class="font">
-            <h3><span style="color: green;">Invoice:</span> #{{ $order->invoice_no }}</h3>
-            Tanggal Pembelian: {{ $order->order_date }} <br>
-            Tipe Pembayaran {{ $order->payment_method }} </span>
-         </p>
-        </td>
-    </tr>
-  </table>
-  <br/>
-<h3>Produk</h3>
+                <div style="float: right; text-align: center; margin-top: 15px;">
+                    <p style="margin: 0; font-size: 10px;">Hormat Kami,</p>
+                    <div style="height: 40px;"></div> <p style="margin: 0; border-top: 1px solid #444; width: 150px; text-align: center; padding-top: 5px; font-weight: bold;">
+                        Manajemen RaraCookies
+                    </p>
+                </div>
+            </td>
 
+            <td width="40%" align="right" valign="top">
+                <table border="0" width="100%">
+                    <tr style="font-size: 11px;">
+                        <td style="padding: 5px 0;">Subtotal:</td>
+                        <td align="right" style="padding: 5px 0;">Rp {{ number_format($totalPrice, 0, ',', '.') }}</td>
+                    </tr>
+                    {{-- Asumsi $order->shipping_cost tersedia --}}
+                    {{-- <tr style="font-size: 11px;">
+                        <td style="padding: 5px 0;">Biaya Kirim:</td>
+                        <td align="right" style="padding: 5px 0;">Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}</td>
+                    </tr> --}}
 
-  <table width="100%">
-    <thead style="background-color: green; color:#FFFFFF;">
-      <tr class="font">
-        <th>Gambar</th>
-        <th>Nama Produk</th>
-        <th>Kode</th>
-        <th>Quantity</th>
-        <th>Nama Toko</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody>
-
-     @foreach ($orderItem as $item)
-      <tr class="font">
-        <td align="center">
-         <img src="{{ public_path($item->product->image) }}" height="60px;" width="60px;" alt="">
-        </td>
-        <td align="center">{{ $item->product->name }}</td>
-        <td align="center">{{ $item->product->code }}</td>
-        <td align="center">{{ $item->qty }}</td>
-        <td align="center">{{ $item->product->client->name }}</td>
-        <td align="center">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
-      </tr>
-     @endforeach
-    </tbody>
-  </table>
-  <br>
-  <table width="100%" style=" padding:0 10px 0 10px;">
-    <tr>
-        <td align="right" >
-            <h2><span style="color: green;">Subtotal:</span> Rp {{ number_format($totalPrice, 0, ',', '.') }}</h2>
-            <h2><span style="color: green;">Total:</span> Rp {{ number_format($totalPrice, 0, ',', '.') }}</h2>
-            {{-- <h2><span style="color: green;">Full Payment PAID</h2> }}
-        </td>
-    </tr>
-  </table>
-  <div class="thanks mt-3">
-    <p>Terima Kasih Sudah Membeli Produk Kami !!.. </p>
-  </div>
-  <div class="authority float-right mt-5">
-      <p>-----------------------------------</p>
-      <h5>Tertanda</h5>
-    </div>
+                    <tr class="bg-navy">
+                        <td style="padding: 10px; color: white;" class="total-final">TOTAL AKHIR:</td>
+                        <td align="right" style="padding: 10px; color: white;" class="total-final">Rp {{ number_format($order->amount, 0, ',', '.') }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
