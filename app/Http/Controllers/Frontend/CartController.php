@@ -12,149 +12,248 @@ use App\Models\Coupon;
 
 class CartController extends Controller
 {
+    /**
+     * Menambahkan produk ke keranjang belanja (Session).
+     */
     public function AddToCart($id)
     {
-        if (Session::has('coupon')) {
-            Session::forget('coupon');
-        }
-
-        $products = Product::find($id);
+        $product = Product::findOrFail($id);
+        Session::forget('coupon');
 
         $cart = session()->get('cart', []);
+        $priceToShow = $product->discount_price ?? $product->price;
+
         if (isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
-            $priceToShow = isset($products->discount_price) ? $products->discount_price : $products->price;
             $cart[$id] = [
-                'id' => $id,
-                'name' => $products->name,
-                'image' => $products->image,
-                'price' => $priceToShow,
-                'client_id' => $products->client_id,
-                'quantity' => 1
+                'id'        => $id,
+                'name'      => $product->name,
+                'image'     => $product->image,
+                'price'     => round($priceToShow, 2), // Pastikan harga dibulatkan
+                'client_id' => $product->client_id,
+                'quantity'  => 1
             ];
         }
+
         session()->put('cart', $cart);
 
-        $notification = array(
-            'message' => 'Add to Cart Successfully',
+        $notification = [
+            'message' => 'Produk berhasil ditambahkan ke Keranjang!',
             'alert-type' => 'success'
-        );
+        ];
 
-        return redirect()->back()->with($notification);
+        return response()->json($notification);
     }
-    //End Method
+    // End Method
 
+    /**
+     * Display the main cart view page.
+     * INI ADALAH METHOD YANG HILANG DAN PERLU DITAMBAHKAN.
+     */
+    public function viewCart()
+{
+    $cart = session()->get('cart', []);
+
+    // Hitung total keranjang
+    $totals = $this->calculateCartTotals();
+    $subtotal = $totals['subtotal'];
+
+    $coupon = Session::get('coupon');
+    $finalAmount = $coupon['total_after_discount'] ?? $subtotal;
+
+    // Ambil data user jika login, agar bisa dipakai di view
+    $order = Auth::check() ? Auth::user() : null;
+
+    return view('frontend.cart.view_cart', compact(
+        'cart',
+        'coupon',
+        'subtotal',
+        'finalAmount',
+        'order'
+    ));
+}
+ //End Method
+
+    /**
+     * Memperbarui kuantitas item keranjang.
+     */
     public function updateCartQuanity(Request $request)
     {
+        $request->validate([
+            'id' => 'required|integer',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
         $cart = session()->get('cart', []);
 
         if (isset($cart[$request->id])) {
             $cart[$request->id]['quantity'] = $request->quantity;
             session()->put('cart', $cart);
+            Session::forget('coupon');
+
+            // Tambahkan data total terbaru ke respons JSON untuk update dinamis di front-end
+            $totals = $this->calculateCartTotals();
+
+            return response()->json([
+                'message' => 'Kuantitas berhasil diperbarui.',
+                'alert-type' => 'success',
+                'subtotal' => $totals['subtotal'],
+            ]);
         }
 
-        return response()->json([
-            'message' => 'Quantity Updated',
-            'alert-type' => 'success'
-        ]);
+        return response()->json(['error' => 'Item tidak ditemukan di keranjang.'], 404);
     }
-    //End Method
+    // End Method
 
+    /**
+     * Menghapus item dari keranjang.
+     */
     public function CartRemove(Request $request)
     {
+        $request->validate(['id' => 'required|integer']);
+
         $cart = session()->get('cart', []);
 
         if (isset($cart[$request->id])) {
             unset($cart[$request->id]);
             session()->put('cart', $cart);
-        }
-        return response()->json([
-            'message' => 'Cart Remove Successfully',
-            'alert-type' => 'success'
-        ]);
-    }
-    //End Method
+            Session::forget('coupon');
 
+            // Tambahkan data total terbaru ke respons JSON
+            $totals = $this->calculateCartTotals();
+
+            return response()->json([
+                'message' => 'Item berhasil dihapus dari keranjang.',
+                'alert-type' => 'success',
+                'subtotal' => $totals['subtotal'],
+            ]);
+        }
+        return response()->json(['error' => 'Item tidak ditemukan di keranjang.'], 404);
+    }
+    // End Method
+
+    /**
+     * Menghitung total jumlah keranjang saat ini.
+     * Memastikan subtotal selalu dibulatkan (round) untuk konsistensi.
+     * @return array
+     */
+    protected function calculateCartTotals()
+    {
+        $cart = session()->get('cart', []);
+        $subtotal = 0;
+        $clientIds = [];
+
+        foreach ($cart as $item) {
+            // Menggunakan round untuk menghindari masalah floating point arithmetic
+            $subtotal += round($item['price'] * $item['quantity'], 2);
+            $clientIds[] = $item['client_id'];
+        }
+
+        // Memastikan subtotal akhir dibulatkan
+        return [
+            'subtotal' => round($subtotal, 2),
+            'client_ids' => $clientIds,
+            'cart_count' => count($cart),
+        ];
+    }
+
+    /**
+     * Menerapkan kupon diskon.
+     */
     public function ApplyCoupon(Request $request)
     {
+        $request->validate(['coupon_name' => 'required|string']);
+
+        $cartData = $this->calculateCartTotals();
+
+        if ($cartData['cart_count'] === 0) {
+            return response()->json(['error' => 'Keranjang belanja kosong.']);
+        }
+
         $coupon = Coupon::where('coupon_name', $request->coupon_name)
             ->where('validity', '>=', Carbon::now()->format('Y-m-d'))
             ->first();
 
-        $cart = session()->get('cart', []);
-        $totalAmount = 0;
-        $clientIds = [];
-
-        foreach ($cart as $car) {
-            $totalAmount += ($car['price'] * $car['quantity']);
-            $pd = Product::find($car['id']);
-            $cdid = $pd->client_id;
-            array_push($clientIds, $cdid);
+        if (!$coupon) {
+            return response()->json(['error' => 'Kupon tidak valid atau sudah kadaluarsa.']);
         }
 
-        if ($coupon) {
-            if (count(array_unique($clientIds)) === 1) {
-                $cvendorId = $coupon->client_id;
+        $uniqueClientIds = array_unique($cartData['client_ids']);
 
-                if ($cvendorId == $clientIds[0]) {
-                    Session::put('coupon', [
-                        'coupon_name' => $coupon->coupon_name,
-                        'discount' => $coupon->discount,
-                        'discount_amount' => $totalAmount - ($totalAmount * $coupon->discount / 100),
-                    ]);
-                    $couponData = Session()->get('coupon');
-
-                    return response()->json(array(
-                        'validity' => true,
-                        'success' => 'Coupon Applied Successfully',
-                        'couponData' => $couponData,
-                    ));
-                } else {
-                    return response()->json(['error' => 'This Coupon Not Valid for this Restrurant']);
-                }
-            } else {
-                return response()->json(['error' => 'This Coupon for one of the selected Restrurant']);
-            }
-        } else {
-            return response()->json(['error' => 'Invalid Coupon']);
+        // --- Logika Kupon Multi-Vendor ---
+        if (count($uniqueClientIds) > 1) {
+            return response()->json(['error' => 'Kupon ini tidak dapat digunakan untuk pesanan dari banyak restoran.']);
         }
+
+        $cartVendorId = $uniqueClientIds[0];
+        $couponVendorId = $coupon->client_id;
+
+        if ((int)$couponVendorId !== (int)$cartVendorId) {
+             return response()->json(['error' => 'Kupon ini tidak berlaku untuk restoran ini.']);
+        }
+
+        // --- Logika Perhitungan Diskon ---
+        $discountAmount = $cartData['subtotal'] * ($coupon->discount / 100);
+        $totalAfterDiscount = $cartData['subtotal'] - $discountAmount;
+
+        Session::put('coupon', [
+            'coupon_name'          => $coupon->coupon_name,
+            'discount_percent'     => $coupon->discount,
+            'discount_amount'      => round($discountAmount, 2),
+            'total_after_discount' => round($totalAfterDiscount, 2),
+        ]);
+
+        $couponData = Session()->get('coupon');
+
+        return response()->json(array(
+            'validity' => true,
+            'success' => 'Kupon berhasil diterapkan!',
+            'couponData' => $couponData,
+            'subtotal' => $cartData['subtotal']
+        ));
     }
-    //End Method
+    // End Method
 
+    /**
+     * Menghapus kupon diskon dari Session.
+     */
     public function CouponRemove()
     {
         Session::forget('coupon');
-        return response()->json(['success' => 'Coupon Remove Successfully']);
+        return response()->json(['success' => 'Kupon berhasil dihapus.']);
     }
-    //End Method
+    // End Method
 
+    /**
+     * Memproses ke halaman checkout.
+     */
     public function ShopCheckout()
     {
-        if (Auth::check()) {
-            $cart = session()->get('cart', []);
-            $totalAmount = 0;
-            foreach ($cart as $car) {
-                $totalAmount += ($car['price'] * $car['quantity']); // ✅ diperbaiki
-            }
-
-            if ($totalAmount > 0) {
-                return view('frontend.checkout.view_checkout', compact('cart'));
-            } else {
-                $notification = array(
-                    'message' => 'Shopping at least one item',
-                    'alert-type' => 'error'
-                );
-                return redirect()->to('/')->with($notification);
-            }
-        } else {
-            $notification = array(
-                'message' => 'Please Login First',
+        if (!Auth::check()) {
+            $notification = [
+                'message' => 'Anda harus Login terlebih dahulu untuk melanjutkan ke Checkout.',
                 'alert-type' => 'error'
-            );
-
+            ];
             return redirect()->route('login')->with($notification);
         }
+
+        $cartData = $this->calculateCartTotals();
+
+        if ($cartData['subtotal'] <= 0) {
+            $notification = [
+                'message' => 'Silakan belanja setidaknya satu item.',
+                'alert-type' => 'error'
+            ];
+            return redirect()->to('/')->with($notification);
+        }
+
+        $cart = session()->get('cart', []);
+        $coupon = Session::get('coupon');
+        $totalAmount = $cartData['subtotal'];
+        $finalAmount = $coupon['total_after_discount'] ?? $totalAmount;
+
+        return view('frontend.checkout.view_checkout', compact('cart', 'totalAmount', 'finalAmount', 'coupon'));
     }
-    //End Method
+    // End Method
 }

@@ -6,8 +6,9 @@
             <img alt="logo" src="{{ asset('frontend/img/logorara.png') }}" width="90">
         </a>
 
-        {{-- TOMBOL TOGGLE (Mobile) --}}
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        {{-- TOGGLE BUTTON (Mobile) --}}
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -17,7 +18,7 @@
 
                 {{-- HOME --}}
                 <li class="nav-item active me-3">
-                    <a class="nav-link fw-bold" href="{{ route('index') }}">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link fw-bold" href="{{ route('index') }}">Home</a>
                 </li>
 
                 {{-- PROMO --}}
@@ -33,15 +34,16 @@
                     <a class="nav-link fw-bold" href="{{ route('list.restaurant') }}">Produk</a>
                 </li>
 
-                {{-- AUTENTIKASI (LOGIN/REGISTER/ACCOUNT) --}}
+                {{-- AUTENTIKASI --}}
                 @auth
                     @php
-                        $id = Auth::user()->id;
-                        $profileData = App\Models\User::find($id);
+                        $profileData = Auth::user();
                     @endphp
                     <li class="nav-item dropdown me-2">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img alt="Profile" src="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/no_image.jpg') }}"
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img alt="Profile"
+                                 src="{{ $profileData->photo ? url('upload/user_images/'.$profileData->photo) : url('upload/no_image.jpg') }}"
                                  class="nav-osahan-pic rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
                             Akun
                         </a>
@@ -64,30 +66,35 @@
                     </li>
                 @endauth
 
-                {{-- KERANJANG (CART) --}}
+                {{-- KERANJANG --}}
                 @php
+                    $cart = session()->get('cart', []);
                     $total = 0;
-                    $cart = session()->get('cart',[]);
                     $groupedCart = [];
                     foreach ($cart as $item) {
                         $groupedCart[$item['client_id']][] = $item;
+                        $total += $item['price'] * $item['quantity'];
                     }
-                    $clients = App\Models\Client::whereIn('id',array_keys($groupedCart))->get()->keyBy('id');
+                    $clients = App\Models\Client::whereIn('id', array_keys($groupedCart))->get()->keyBy('id');
                 @endphp
 
                 <li class="nav-item dropdown dropdown-cart ms-3">
-                    <a class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-shopping-basket me-1"></i> Keranjang
-                        <span class="badge bg-danger ms-1 rounded-pill">{{ count((array) session('cart')) }}</span>
+                        <span class="badge bg-danger ms-1 rounded-pill">{{ count($cart) }}</span>
                     </a>
-                    <div class="dropdown-menu dropdown-cart-top p-0 dropdown-menu-right shadow-lg border-0" style="min-width: 320px;">
+                    <div class="dropdown-menu dropdown-cart-top p-0 dropdown-menu-right shadow-lg border-0"
+                         style="min-width: 320px;">
 
-                        {{-- CART HEADER (Per Client/Vendor) --}}
+                        {{-- CART HEADER --}}
                         @foreach ($groupedCart as $clientId => $items)
                             @if (isset($clients[$clientId]))
                                 @php $client = $clients[$clientId]; @endphp
                                 <div class="dropdown-cart-top-header bg-light p-3 border-bottom d-flex align-items-center">
-                                    <img class="img-fluid rounded-circle me-3" alt="{{ $client->name }}" src="{{ asset('upload/client_images/' . $client->photo) }}" style="width: 40px; height: 40px; object-fit: cover;">
+                                    <img class="img-fluid rounded-circle me-3" alt="{{ $client->name }}"
+                                         src="{{ $client->photo ? asset('upload/client_images/' . $client->photo) : asset('upload/no_image.jpg') }}"
+                                         style="width: 40px; height: 40px; object-fit: cover;">
                                     <div>
                                         <h6 class="mb-0 fw-bold">{{ $client->name }}</h6>
                                         <p class="text-muted small mb-0">{{ $client->address }}</p>
@@ -96,34 +103,30 @@
                             @endif
                         @endforeach
 
-                        {{-- CART BODY (Items) --}}
+                        {{-- CART BODY --}}
                         <div class="dropdown-cart-top-body p-3" style="max-height: 200px; overflow-y: auto;">
-                            @php $total = 0 @endphp
-                            @if (session('cart'))
-                                @foreach (session('cart') as $id => $details)
-                                    @php $total += $details['price'] * $details['quantity']; @endphp
+                            @if (!empty($cart))
+                                @foreach ($cart as $item)
                                     <p class="mb-2 d-flex justify-content-between">
                                         <span class="text-dark">
                                             <i class="icofont-ui-press text-danger food-item me-1"></i>
-                                            {{ $details['name'] }} <span class="text-muted small">x {{ $details['quantity'] }}</span>
+                                            {{ $item['name'] }} <span class="text-muted small">x {{ $item['quantity'] }}</span>
                                         </span>
                                         <span class="text-dark fw-bold">
-                                            Rp {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}
+                                            Rp {{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
                                         </span>
                                     </p>
                                 @endforeach
+                            @else
+                                <p class="text-muted text-center">Keranjang kosong</p>
                             @endif
                         </div>
 
-                        {{-- CART FOOTER (Sub Total) --}}
+                        {{-- CART FOOTER --}}
                         <div class="dropdown-cart-top-footer border-top p-3 d-flex justify-content-between">
                             <p class="mb-0 fw-bold text-secondary">Sub Total</p>
                             <span class="text-dark fw-bold">
-                                @if (Session::has('coupon'))
-                                    Rp {{ number_format(Session()->get('coupon')['discount_amount'] ?? 0, 0, ',', '.') }}
-                                @else
-                                    Rp {{ number_format($total, 0, ',', '.') }}
-                                @endif
+                                Rp {{ number_format(Session::get('coupon')['discount_amount'] ?? $total, 0, ',', '.') }}
                             </span>
                         </div>
 
@@ -135,6 +138,7 @@
                         </div>
                     </div>
                 </li>
+
             </ul>
         </div>
     </div>

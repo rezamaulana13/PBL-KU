@@ -211,29 +211,39 @@
    <div class="mb-2 bg-white rounded p-2 clearfix">
       <p class="mb-1">Item Total <span class="float-right text-dark">{{ count((array) session('cart')) }}</span></p>
 
-      <p class="mb-1">Coupon Name <span class="float-right text-dark">{{ (session()->get('coupon')['coupon_name']) }} ( {{ (session()->get('coupon')['discount']) }} %) </span>
-      <a type="submit" onclick="couponRemove()"><i class="icofont-ui-delete float-right" style="color: yellow;"></i></a>
-      </p>
+      <p class="mb-1">
+            Coupon Name
+            <span class="float-right text-dark">
+                {{ session('coupon')['coupon_name'] ?? '' }}
+                ( {{ session('coupon')['discount'] ?? 0 }} % )
+            </span>
+        <a type="submit" onclick="couponRemove()">
+            <i class="icofont-ui-delete float-right" style="color: yellow;"></i>
+        </a>
+    </p>
+
 
 
       <p class="mb-1 text-success">Total Discount
-         <span class="float-right text-success">
+   <span class="float-right text-success">
+       @if (Session::has('coupon'))
+           Rp {{ number_format(Session::get('coupon')['discount_amount'],0,',','.') }}
+       @else
+           Rp 0
+       @endif
+   </span>
+</p>
+<hr />
+<h6 class="font-weight-bold mb-0">TO PAY
+   <span class="float-right">
+       @if (Session::has('coupon'))
+           Rp {{ number_format(Session::get('coupon')['total_after_discount'],0,',','.') }}
+       @else
+           Rp {{ number_format($total,0,',','.') }}
+       @endif
+   </span>
+</h6>
 
-            @if (Session::has('coupon'))
-               ${{ $total - Session()->get('coupon')['discount_amount'] }}
-            @else
-            ${{ $total }}
-            @endif
-
-         </span>
-      </p>
-      <hr />
-      <h6 class="font-weight-bold mb-0">TO PAY  <span class="float-right">
-      @if (Session::has('coupon'))
-      ${{ Session()->get('coupon')['discount_amount'] }}
-      @else
-      ${{ $total }}
-      @endif</span></h6>
    </div>
 
    @else

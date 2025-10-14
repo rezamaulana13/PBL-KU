@@ -42,38 +42,35 @@
 
 
             <tbody>
-                @php $key = 1; @endphp
-           @foreach ($orderItemGroupData as $orderitem)
-           @php
-               $firstItem = $orderitem->first();
-               $order = $firstItem->order;
-           @endphp
-            <tr>
-                <td>{{ $key++ }}</td>
-                <td>{{ $order->order_date }}</td>
-                <td>{{ $order->invoice_no }}</td>
-                <td>${{ $order->amount }}</td>
-                <td>{{ $order->payment_method }}</td>
-                <td>
-                    @if ($order->status == 'Pending')
+    @php $key = 1; @endphp
+    @foreach ($orders as $order)
+        <tr>
+            <td>{{ $key++ }}</td>
+            <td>{{ $order->order_date }}</td>
+            <td>{{ $order->invoice_no }}</td>
+            <td>Rp{{ number_format($order->amount, 0, ',', '.') }}</td>
+            <td>{{ $order->payment_method }}</td>
+            <td>
+                @if ($order->status == 'Pending')
                     <span class="badge bg-info">Pending</span>
-                    @elseif ($order->status == 'confirm')
+                @elseif ($order->status == 'confirm')
                     <span class="badge bg-primary">Confirm</span>
-                    @elseif ($order->status == 'processing')
+                @elseif ($order->status == 'processing')
                     <span class="badge bg-warning">Processing</span>
-                    @elseif ($order->status == 'deliverd')
-                    <span class="badge bg-success">Deliverd</span>
-                    @endif
-                   </td>
+                @elseif ($order->status == 'deliverd')
+                    <span class="badge bg-success">Delivered</span>
+                @endif
+            </td>
+            <td>
+                <a href="{{ route('client.order.details',$order->id) }}"
+                   class="btn btn-info waves-effect waves-light">
+                   <i class="fas fa-eye"></i>
+                </a>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
 
-
-                   <td><a href="{{ route('client.order.details',$order->id) }}" class="btn btn-info waves-effect waves-light"> <i class="fas fa-eye"></i> </a>
-
-                </td>
-            </tr>
-            @endforeach
-
-            </tbody>
         </table>
 
                     </div>

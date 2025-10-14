@@ -2,332 +2,312 @@
 @section('client')
 
 @php
-    $id = Auth::guard('client')->id();
-    $client = App\Models\Client::find($id);
-    $status = $client->status;
+    // Data Dummy Client
+    $user = (object)['name' => 'RaraCoockies '];
+    $totalOrders = 12;
+    $lastOrderDate = '28 Okt 2025';
+    $points = 4800;
+    $membership = 'Diamond Tier';
+    $pendingOrders = 1;
+
+    // DATA DUMMY PESANAN TERBARU (MENGGANTIKAN $latestOrder)
+    $recentOrders = [
+        [
+            'id' => '#RC10250012',
+            'date' => '28 Okt',
+            'items' => 'Nastar Signature (2), Kastangel (1)',
+            'total' => '650.000',
+            'status' => 'Quality Check',
+            'status_color' => '#D4AF37', // Gold
+        ],
+        [
+            'id' => '#RC10250011',
+            'date' => '15 Okt',
+            'items' => 'Chocochips Klasik (3)',
+            'total' => '300.000',
+            'status' => 'Terkirim',
+            'status_color' => '#28a745', // Green (Success)
+        ],
+        [
+            'id' => '#RC10250010',
+            'date' => '01 Okt',
+            'items' => 'Kue Kering Spesial (1)',
+            'total' => '225.000',
+            'status' => 'Dibatalkan',
+            'status_color' => '#C1272D', // Maroon (Danger)
+        ],
+    ];
 @endphp
+
+<style>
+    /* PALET WARNA PREMIUM */
+    .page-title-box h4 {
+        color: #4E342E !important;
+    }
+    .card {
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        border-radius: 16px !important;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+    .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+    }
+    .counter-value {
+        font-weight: 800;
+        color: #4E342E;
+    }
+
+    /* Warna border untuk statistik */
+    .border-gold { border-color: #D4AF37 !important; }
+    .border-maroon { border-color: #C1272D !important; }
+    .text-gold { color: #D4AF37 !important; }
+    .text-maroon { color: #C1272D !important; }
+
+    /* Badge untuk status */
+    .badge-premium-gold {
+        background-color: #D4AF37;
+        color: #4E342E;
+        font-weight: 700;
+        padding: 8px 15px;
+        border-radius: 20px;
+    }
+
+    /* Status Table */
+    .status-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 5px 10px;
+        border-radius: 10px;
+        /* Tambahkan style untuk kontras */
+        filter: brightness(0.9);
+    }
+
+    /* Carousel Premium */
+    .bg-promo-premium {
+        background: linear-gradient(135deg, #4E342E 0%, #C1272D 100%) !important;
+    }
+    .bg-promo-premium .avatar-title {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #4E342E;
+    }
+
+    /* Tabel Styling Premium */
+    .table-order-premium th {
+        color: #4E342E;
+        font-weight: 600;
+        border-bottom-width: 2px !important;
+    }
+    .table-order-premium td {
+        vertical-align: middle;
+    }
+</style>
 
 <div class="page-content">
     <div class="container-fluid">
 
-        @if ($status === '1')
-        <h4>Restaurant Account is <span class="text-success">Active</span> </h4>
-        @else
-        <h4>Restaurant Account is <span class="text-danger">InActive</span> </h4>
-        <p class="text-danger"><b>Plz wait admin will check and approve your account </b> </p>
-        @endif
-
-        <!-- start page title -->
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between mb-5 pb-2">
+                    <h4 class="mb-sm-0 font-size-28 fw-bolder" style="letter-spacing: -1px;">
+                        <i class="mdi mdi-crown me-2"></i> Selamat Datang, {{ $user->name ?? 'Pelanggan Setia' }}!
+                    </h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Dashboard</li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);" class="text-muted">Akun</a></li>
+                            <li class="breadcrumb-item active text-gold">Dashboard</li>
                         </ol>
                     </div>
-
                 </div>
             </div>
         </div>
-        <!-- end page title -->
 
-        <div class="row">
+        <div class="row g-5">
             <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-h-100">
-                    <!-- card body -->
+                <div class="card card-h-100 border-start border-4 border-gold shadow-lg h-100">
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <div class="col-6">
-                                <span class="text-muted mb-3 lh-1 d-block text-truncate">My Wallet</span>
-                                <h4 class="mb-3">
-                                    $<span class="counter-value" data-target="865.2">0</span>k
+                            <div class="col-7">
+                                <span class="text-muted mb-2 d-block font-size-14">Keanggotaan Eksklusif</span>
+                                <h4 class="mb-2 text-gold fw-bolder">
+                                    {{ $membership }}
                                 </h4>
                             </div>
-
-                            <div class="col-6">
-                                <div id="mini-chart1" data-colors='["#5156be"]' class="apex-charts mb-2"></div>
+                            <div class="col-5 text-end">
+                                <i class="mdi mdi-diamond-stone mdi-36px text-gold opacity-80"></i>
                             </div>
                         </div>
-                        <div class="text-nowrap">
-                            <span class="badge bg-success-subtle text-success">+$20.9k</span>
-                            <span class="ms-1 text-muted font-size-13">Since last week</span>
+                        <div class="mt-3">
+                            <span class="badge badge-premium-gold px-3 py-1">Diskon 10% & Prioritas Pesanan</span>
                         </div>
-                    </div><!-- end card body -->
-                </div><!-- end card -->
-            </div><!-- end col -->
+                    </div>
+                </div>
+            </div>
 
             <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-h-100">
-                    <!-- card body -->
+                <div class="card card-h-100 border-start border-4 border-info shadow-sm h-100">
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <div class="col-6">
-                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Number of Trades</span>
-                                <h4 class="mb-3">
-                                    <span class="counter-value" data-target="6258">0</span>
+                            <div class="col-7">
+                                <span class="text-muted mb-2 d-block font-size-14">Total Transaksi</span>
+                                <h4 class="mb-2 text-info fw-bold">
+                                    <span class="counter-value" data-target="{{ $totalOrders }}">0</span> Kali
                                 </h4>
                             </div>
-                            <div class="col-6">
-                                <div id="mini-chart2" data-colors='["#5156be"]' class="apex-charts mb-2"></div>
+                            <div class="col-5 text-end">
+                                <i class="mdi mdi-history mdi-36px text-info opacity-80"></i>
                             </div>
                         </div>
-                        <div class="text-nowrap">
-                            <span class="badge bg-danger-subtle text-danger">-29 Trades</span>
-                            <span class="ms-1 text-muted font-size-13">Since last week</span>
+                        <div class="mt-3">
+                            <span class="text-muted font-size-12">Pesanan Terakhir: {{ $lastOrderDate }}</span>
                         </div>
-                    </div><!-- end card body -->
-                </div><!-- end card -->
-            </div><!-- end col-->
+                    </div>
+                </div>
+            </div>
 
             <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-h-100">
-                    <!-- card body -->
+                <div class="card card-h-100 border-start border-4 border-warning shadow-sm h-100">
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <div class="col-6">
-                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Invested Amount</span>
-                                <h4 class="mb-3">
-                                    $<span class="counter-value" data-target="4.32">0</span>M
+                            <div class="col-7">
+                                <span class="text-muted mb-2 d-block font-size-14">Akumulasi Poin</span>
+                                <h4 class="mb-2 text-warning fw-bold">
+                                    <span class="counter-value" data-target="{{ $points }}">0</span> Poin
                                 </h4>
                             </div>
-                            <div class="col-6">
-                                <div id="mini-chart3" data-colors='["#5156be"]' class="apex-charts mb-2"></div>
+                            <div class="col-5 text-end">
+                                <i class="mdi mdi-wallet-giftcard mdi-36px text-warning opacity-80"></i>
                             </div>
                         </div>
-                        <div class="text-nowrap">
-                            <span class="badge bg-success-subtle text-success">+ $2.8k</span>
-                            <span class="ms-1 text-muted font-size-13">Since last week</span>
+                        <div class="mt-3">
+                            <span class="text-muted font-size-12">Poin Baru Bulan Ini: +320</span>
                         </div>
-                    </div><!-- end card body -->
-                </div><!-- end card -->
-            </div><!-- end col -->
+                    </div>
+                </div>
+            </div>
 
             <div class="col-xl-3 col-md-6">
-                <!-- card -->
-                <div class="card card-h-100">
-                    <!-- card body -->
+                <div class="card card-h-100 border-start border-4 border-maroon shadow-sm h-100">
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <div class="col-6">
-                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Profit Ration</span>
-                                <h4 class="mb-3">
-                                    <span class="counter-value" data-target="12.57">0</span>%
+                            <div class="col-7">
+                                <span class="text-muted mb-2 d-block font-size-14">Pesanan Aktif</span>
+                                <h4 class="mb-2 text-maroon fw-bold">
+                                    <span class="counter-value" data-target="{{ $pendingOrders }}">0</span> Sedang Diproses
                                 </h4>
                             </div>
-                            <div class="col-6">
-                                <div id="mini-chart4" data-colors='["#5156be"]' class="apex-charts mb-2"></div>
+                            <div class="col-5 text-end">
+                                <i class="mdi mdi-cookie-plus mdi-36px text-maroon opacity-80"></i>
                             </div>
                         </div>
-                        <div class="text-nowrap">
-                            <span class="badge bg-success-subtle text-success">+2.95%</span>
-                            <span class="ms-1 text-muted font-size-13">Since last week</span>
+                        <div class="mt-3">
+                            <a href="#" class="text-maroon font-size-12 fw-medium">Lacak Detail <i class="mdi mdi-arrow-right"></i></a>
                         </div>
-                    </div><!-- end card body -->
-                </div><!-- end card -->
-            </div><!-- end col -->
-        </div><!-- end row-->
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <div class="row">
-            <div class="col-xl-5">
-                <!-- card -->
-                <div class="card card-h-100">
-                    <!-- card body -->
-                    <div class="card-body">
-                        <div class="d-flex flex-wrap align-items-center mb-4">
-                            <h5 class="card-title me-2">Wallet Balance</h5>
-                            <div class="ms-auto">
-                                <div>
-                                    <button type="button" class="btn btn-soft-secondary btn-sm">
-                                        ALL
-                                    </button>
-                                    <button type="button" class="btn btn-soft-primary btn-sm">
-                                        1M
-                                    </button>
-                                    <button type="button" class="btn btn-soft-secondary btn-sm">
-                                        6M
-                                    </button>
-                                    <button type="button" class="btn btn-soft-secondary btn-sm">
-                                        1Y
-                                    </button>
+        <div class="row g-5 mt-1">
+            <div class="col-xl-6">
+                <div class="card shadow-lg h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-4">
+                            <h5 class="card-title me-auto fw-bold" style="color: #4E342E;">
+                                <i class="mdi mdi-format-list-bulleted me-1"></i> 3 Pesanan Terakhir Anda
+                            </h5>
+                            <a href="#" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                Ke Halaman Orders
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 table-order-premium">
+                                <thead>
+                                    <tr>
+                                        <th>ID Pesanan</th>
+                                        <th>Tanggal</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($recentOrders as $order)
+                                    <tr>
+                                        <td class="fw-bold">{{ $order['id'] }}</td>
+                                        <td>{{ $order['date'] }}</td>
+                                        <td class="fw-medium">Rp {{ number_format($order['total'], 0, ',', '.') }}</td>
+                                        <td>
+                                            <span class="badge status-badge text-white" style="background-color: {{ $order['status_color'] }};">
+                                                {{ $order['status'] }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="text-info font-size-14">
+                                                <i class="mdi mdi-eye-outline"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="card bg-promo-premium text-white h-100 shadow-lg">
+                    <div class="card-body p-0">
+                        <div id="carouselPromo" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <div class="text-center p-5">
+                                        <div class="avatar-md mx-auto mb-4">
+                                            <span class="avatar-title rounded-circle fs-3 shadow">
+                                                <i class="mdi mdi-gift-outline"></i>
+                                            </span>
+                                        </div>
+                                        <h5 class="fw-bolder font-size-20">HADIAH SPESIAL DIAMOND TIER</h5>
+                                        <p class="text-white-75 mb-4 font-size-14">
+                                            Klaim *Exclusive Box* kue kering mini GRATIS dengan setiap pesanan di atas Rp 500.000.
+                                        </p>
+                                        <button class="btn btn-light btn-sm rounded-pill px-4 py-2 fw-bold" style="color: #4E342E;">
+                                            Klaim Sekarang <i class="mdi mdi-arrow-right ms-1"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <div class="text-center p-5">
+                                        <div class="avatar-md mx-auto mb-4">
+                                            <span class="avatar-title rounded-circle fs-3 shadow">
+                                                <i class="mdi mdi-calendar-star"></i>
+                                            </span>
+                                        </div>
+                                        <h5 class="fw-bolder font-size-20">LIMITED EDITION</h5>
+                                        <p class="text-white-75 mb-4 font-size-14">
+                                            Pre-order 'Cookies of the Month' rasa Kopi Mocha hanya tersedia minggu ini.
+                                        </p>
+                                        <button class="btn btn-light btn-sm rounded-pill px-4 py-2 fw-bold" style="color: #4E342E;">
+                                            Pesan Cepat <i class="mdi mdi-arrow-right ms-1"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row align-items-center">
-                            <div class="col-sm">
-                                <div id="wallet-balance" data-colors='["#777aca", "#5156be", "#a8aada"]' class="apex-charts"></div>
-                            </div>
-                            <div class="col-sm align-self-center">
-                                <div class="mt-4 mt-sm-0">
-                                    <div>
-                                        <p class="mb-2"><i class="mdi mdi-circle align-middle font-size-10 me-2 text-success"></i> Bitcoin</p>
-                                        <h6>0.4412 BTC = <span class="text-muted font-size-14 fw-normal">$ 4025.32</span></h6>
-                                    </div>
-
-                                    <div class="mt-4 pt-2">
-                                        <p class="mb-2"><i class="mdi mdi-circle align-middle font-size-10 me-2 text-primary"></i> Ethereum</p>
-                                        <h6>4.5701 ETH = <span class="text-muted font-size-14 fw-normal">$ 1123.64</span></h6>
-                                    </div>
-
-                                    <div class="mt-4 pt-2">
-                                        <p class="mb-2"><i class="mdi mdi-circle align-middle font-size-10 me-2 text-info"></i> Litecoin</p>
-                                        <h6>35.3811 LTC = <span class="text-muted font-size-14 fw-normal">$ 2263.09</span></h6>
-                                    </div>
-                                </div>
+                            <div class="carousel-indicators position-relative mt-3">
+                                <button type="button" data-bs-target="#carouselPromo" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselPromo" data-bs-slide-to="1" aria-label="Slide 2"></button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- end card -->
             </div>
-            <!-- end col -->
-            <div class="col-xl-7">
-                <div class="row">
-                    <div class="col-xl-8">
-                        <!-- card -->
-                        <div class="card card-h-100">
-                            <!-- card body -->
-                            <div class="card-body">
-                                <div class="d-flex flex-wrap align-items-center mb-4">
-                                    <h5 class="card-title me-2">Invested Overview</h5>
-                                    <div class="ms-auto">
-                                        <select class="form-select form-select-sm">
-                                            <option value="MAY" selected="">May</option>
-                                            <option value="AP">April</option>
-                                            <option value="MA">March</option>
-                                            <option value="FE">February</option>
-                                            <option value="JA">January</option>
-                                            <option value="DE">December</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="row align-items-center">
-                                    <div class="col-sm">
-                                        <div id="invested-overview" data-colors='["#5156be", "#34c38f"]' class="apex-charts"></div>
-                                    </div>
-                                    <div class="col-sm align-self-center">
-                                        <div class="mt-4 mt-sm-0">
-                                            <p class="mb-1">Invested Amount</p>
-                                            <h4>$ 6134.39</h4>
-
-                                            <p class="text-muted mb-4"> + 0.0012.23 ( 0.2 % ) <i class="mdi mdi-arrow-up ms-1 text-success"></i></p>
-
-                                            <div class="row g-0">
-                                                <div class="col-6">
-                                                    <div>
-                                                        <p class="mb-2 text-muted text-uppercase font-size-11">Income</p>
-                                                        <h5 class="fw-medium">$ 2632.46</h5>
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div>
-                                                        <p class="mb-2 text-muted text-uppercase font-size-11">Expenses</p>
-                                                        <h5 class="fw-medium">-$ 924.38</h5>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="mt-2">
-                                                <a href="#" class="btn btn-primary btn-sm">View more <i class="mdi mdi-arrow-right ms-1"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-
-                    <div class="col-xl-4">
-                        <!-- card -->
-                        <div class="card bg-primary text-white shadow-primary card-h-100">
-                            <!-- card body -->
-                            <div class="card-body p-0">
-                                <div id="carouselExampleCaptions" class="carousel slide text-center widget-carousel" data-bs-ride="carousel">
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <div class="text-center p-4">
-                                                <i class="mdi mdi-bitcoin widget-box-1-icon"></i>
-                                                <div class="avatar-md m-auto">
-                                                    <span class="avatar-title rounded-circle bg-light-subtle text-white font-size-24">
-                                                        <i class="mdi mdi-currency-btc"></i>
-                                                    </span>
-                                                </div>
-                                                <h4 class="mt-3 lh-base fw-normal text-white"><b>Bitcoin</b> News</h4>
-                                                <p class="text-white-50 font-size-13">Bitcoin prices fell sharply amid the global sell-off in equities. Negative news
-                                                    over the Bitcoin past week has dampened Bitcoin basics
-                                                    sentiment for bitcoin. </p>
-                                                <button type="button" class="btn btn-light btn-sm">View details <i class="mdi mdi-arrow-right ms-1"></i></button>
-                                            </div>
-                                        </div>
-                                        <!-- end carousel-item -->
-                                        <div class="carousel-item">
-                                            <div class="text-center p-4">
-                                                <i class="mdi mdi-ethereum widget-box-1-icon"></i>
-                                                <div class="avatar-md m-auto">
-                                                    <span class="avatar-title rounded-circle bg-light-subtle text-white font-size-24">
-                                                        <i class="mdi mdi-ethereum"></i>
-                                                    </span>
-                                                </div>
-                                                <h4 class="mt-3 lh-base fw-normal text-white"><b>ETH</b> News</h4>
-                                                <p class="text-white-50 font-size-13">Bitcoin prices fell sharply amid the global sell-off in equities. Negative news
-                                                    over the Bitcoin past week has dampened Bitcoin basics
-                                                    sentiment for bitcoin. </p>
-                                                <button type="button" class="btn btn-light btn-sm">View details <i class="mdi mdi-arrow-right ms-1"></i></button>
-                                            </div>
-                                        </div>
-                                        <!-- end carousel-item -->
-                                        <div class="carousel-item">
-                                            <div class="text-center p-4">
-                                                <i class="mdi mdi-litecoin widget-box-1-icon"></i>
-                                                <div class="avatar-md m-auto">
-                                                    <span class="avatar-title rounded-circle bg-light-subtle text-white font-size-24">
-                                                        <i class="mdi mdi-litecoin"></i>
-                                                    </span>
-                                                </div>
-                                                <h4 class="mt-3 lh-base fw-normal text-white"><b>Litecoin</b> News</h4>
-                                                <p class="text-white-50 font-size-13">Bitcoin prices fell sharply amid the global sell-off in equities. Negative news
-                                                    over the Bitcoin past week has dampened Bitcoin basics
-                                                    sentiment for bitcoin. </p>
-                                                <button type="button" class="btn btn-light btn-sm">View details <i class="mdi mdi-arrow-right ms-1"></i></button>
-                                            </div>
-                                        </div>
-                                        <!-- end carousel-item -->
-                                    </div>
-                                    <!-- end carousel-inner -->
-
-                                    <div class="carousel-indicators carousel-indicators-rounded">
-                                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                                            aria-current="true" aria-label="Slide 1"></button>
-                                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                    </div>
-                                    <!-- end carousel-indicators -->
-                                </div>
-                                <!-- end carousel -->
-                            </div>
-                            <!-- end card body -->
-                        </div>
-                        <!-- end card -->
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end col -->
-        </div> <!-- end row-->
-
-
+        </div>
     </div>
-    <!-- container-fluid -->
 </div>
 
 @endsection

@@ -5,230 +5,170 @@
 <div class="page-content">
     <div class="container-fluid">
 
-        <!-- start page title -->
+        <!-- Judul Halaman -->
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Add Product</h4>
-
+                    <h4 class="mb-sm-0 font-size-18">Tambah Produk</h4>
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Add Product  </li>
+                            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Tambah Produk</li>
                         </ol>
                     </div>
-
                 </div>
             </div>
         </div>
-        <!-- end page title -->
 
+        <!-- Form Produk -->
         <div class="row">
-            <div class="col-xl-12 col-lg-12">
- <div class="card">
-<div class="card-body p-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <form id="myForm" action="{{ route('product.store') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row">
 
-<form id="myForm" action="{{ route('product.store') }}" method="post" enctype="multipart/form-data">
-    @csrf
+                                <!-- Kategori -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Kategori</label>
+                                    <select name="category_id" class="form-select">
+                                        <option disabled selected>Pilih</option>
+                                        @foreach($category as $cat)
+                                            <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-<div class="row">
-    <div class="col-xl-4 col-md-6">
-            <div class="form-group mb-3">
-                <label for="example-text-input" class="form-label">Nama Kategori</label>
-                <select name="category_id" class="form-select">
-                    <option>Select</option>
-                    @foreach ($category as $cat)
-                    <option value="{{ $cat->id }}">{{ $cat->category_name }}</option>
-                    @endforeach
-                </select>
+                                <!-- Menu -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Menu</label>
+                                    <select name="menu_id" class="form-select">
+                                        <option disabled selected>Pilih</option>
+                                        @foreach($menu as $men)
+                                            <option value="{{ $men->id }}">{{ $men->menu_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Kota -->
+                                <div class="col-md-4">
+                                    <label class="form-label">Kota</label>
+                                    <select name="city_id" class="form-select">
+                                        <option disabled selected>Pilih</option>
+                                        @foreach($city as $cit)
+                                            <option value="{{ $cit->id }}">{{ $cit->city_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Nama Produk -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Nama Produk</label>
+                                    <input type="text" name="name" class="form-control">
+                                </div>
+
+                                <!-- Ukuran -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Ukuran</label>
+                                    <input type="text" name="size" class="form-control">
+                                </div>
+
+                                <!-- Harga -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Harga</label>
+                                    <input type="text" name="price" id="price" class="form-control" onkeyup="formatRupiah(this)">
+                                </div>
+
+                                <!-- Harga Diskon -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Harga Diskon</label>
+                                    <input type="text" name="discount_price" id="discount_price" class="form-control" onkeyup="formatRupiah(this)">
+                                </div>
+
+                                <!-- Stok -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Stok Tersedia</label>
+                                    <input type="number" name="qty" class="form-control">
+                                </div>
+
+                                <!-- Gambar -->
+                                <div class="col-md-4 mt-3">
+                                    <label class="form-label">Gambar Produk</label>
+                                    <input type="file" name="image" id="image" class="form-control">
+                                </div>
+
+                                <div class="col-md-4 mt-3">
+                                    <img id="showImage" src="{{ url('upload/profile.jpg') }}" alt="Preview" width="110" class="rounded">
+                                </div>
+
+                                <!-- Checkbox Best Seller & Most Populer -->
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="best_seller" value="1" class="form-check-input" id="best_seller">
+                                        <label class="form-check-label" for="best_seller">Best Seller</label>
+                                    </div>
+                                    <div class="form-check mt-2">
+                                        <input type="checkbox" name="most_populer" value="1" class="form-check-input" id="most_populer">
+                                        <label class="form-check-label" for="most_populer">Most Populer</label>
+                                    </div>
+                                </div>
+
+                                <!-- Submit -->
+                                <div class="col-md-12 mt-4">
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-    </div>
-
-    <div class="col-xl-4 col-md-6">
-        <div class="form-group mb-3">
-            <label for="example-text-input" class="form-label">Nama Menu</label>
-            <select name="menu_id" class="form-select">
-                <option selected="" disabled="" >Select</option>
-                @foreach ($menu as $men)
-                <option value="{{ $men->id }}">{{ $men->menu_name }}</option>
-                @endforeach
-            </select>
         </div>
-</div>
 
-
-
-<div class="col-xl-4 col-md-6">
-    <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Kota</label>
-        <select name="city_id" class="form-select">
-            <option>Select</option>
-            @foreach ($city as $cit)
-            <option value="{{ $cit->id }}">{{ $cit->city_name }}</option>
-            @endforeach
-        </select>
     </div>
 </div>
 
+<script>
+    // Preview Gambar
+    $('#image').change(function(e){
+        var reader = new FileReader();
+        reader.onload = function(e){
+            $('#showImage').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(e.target.files[0]);
+    });
 
-<div class="col-xl-4 col-md-6">
-    <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Nama Produk</label>
-        <input class="form-control" type="text" name="name"  id="example-text-input">
-    </div>
-</div>
-
-<div class="col-xl-4 col-md-6">
-    <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Harga</label>
-        <input class="form-control" type="text" name="price"  id="example-text-input">
-    </div>
-</div>
-
-<div class="col-xl-4 col-md-6">
-    <div class="form-group mb-3">
-        <label for="price" class="form-label">Harga</label>
-        <input class="form-control" type="text" name="price" id="price" onkeyup="formatRupiah(this)">
-    </div>
-</div>
-
-<div class="col-xl-4 col-md-6">
-    <div class="form-group mb-3">
-        <label for="discount_price" class="form-label">Harga Diskon</label>
-        <input class="form-control" type="text" name="discount_price" id="discount_price" onkeyup="formatRupiah(this)">
-    </div>
-</div>
-
-<div class="col-xl-6 col-md-6">
-    <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Tersedia Stok</label>
-        <input class="form-control" type="text" name="qty"  id="example-text-input">
-    </div>
-</div>
-
-<div class="col-xl-6 col-md-6">
-    <div class="form-group mb-3">
-        <label for="example-text-input" class="form-label">Gambar Produk</label>
-        <input class="form-control" name="image" type="file"  id="image">
-    </div>
-</div>
-
-<div class="col-xl-6 col-md-6">
-    <div class="form-group mb-3">
-        <img id="showImage" src="{{ url('upload/profile.jpg') }}" alt="" class="rounded-circle p-1 bg-primary" width="110">
-    </div>
-</div>
-
-<div class="form-check mt-2">
-    <input class="form-check-input" name="best_seller" type="checkbox" id="formCheck2" value="1"  >
-    <label class="form-check-label" for="formCheck2">
-        Best Seller
-    </label>
-</div>
-
-<div class="form-check mt-2">
-    <input class="form-check-input"  name="most_populer" type="checkbox" id="formCheck2"  value="1"   >
-    <label class="form-check-label" for="formCheck2">
-       Most Populer
-    </label>
-</div>
-
-<div class="mt-4">
-    <button type="submit" class="btn btn-primary waves-effect waves-light">Simpan</button>
-</div>
-
-</div>
-</form>
-</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-                <!-- end tab content -->
-            </div>
-            <!-- end col -->
-
-
-            <!-- end col -->
-        </div>
-        <!-- end row -->
-
-    </div> <!-- container-fluid -->
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#image').change(function(e){
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $('#showImage').attr('src',e.target.result);
-            }
-            reader.readAsDataURL(e.target.files['0']);
-        })
-    })
-
-</script>
-
-<script type="text/javascript">
+    // Validasi
     $(document).ready(function (){
         $('#myForm').validate({
             rules: {
-                name: {
-                    required : true,
-                },
-                image: {
-                    required : true,
-                },
-                menu_id: {
-                    required : true,
-                },
-
+                name: {required:true},
+                image: {required:true},
+                menu_id: {required:true},
+                category_id: {required:true},
             },
-            messages :{
-                name: {
-                    required : 'Please Enter Name',
-                },
-                image: {
-                    required : 'Please Select Image',
-                },
-                menu_id: {
-                    required : 'Please Select One Menu',
-                },
-
-
+            messages: {
+                name: {required:'Harap isi nama produk'},
+                image: {required:'Harap pilih gambar'},
+                menu_id: {required:'Harap pilih menu'},
+                category_id: {required:'Harap pilih kategori'},
             },
-            errorElement : 'span',
-            errorPlacement: function (error,element) {
+            errorElement:'span',
+            errorPlacement:function(error,element){
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight : function(element, errorClass, validClass){
-                $(element).addClass('is-invalid');
-            },
-            unhighlight : function(element, errorClass, validClass){
-                $(element).removeClass('is-invalid');
-            },
+            highlight:function(element){$(element).addClass('is-invalid');},
+            unhighlight:function(element){$(element).removeClass('is-invalid');}
         });
     });
 
-    function formatRupiah(input) {
-    let value = input.value.replace(/[^,\d]/g, ''); // Hapus semua selain angka
-    let formatted = new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0
-    }).format(value);
-
-    input.value = formatted;
-}
+    // Format Rupiah
+    function formatRupiah(input){
+        let value = input.value.replace(/[^,\d]/g,'');
+        let formatted = new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', minimumFractionDigits:0}).format(value);
+        input.value = formatted;
+    }
 </script>
-
-
 @endsection

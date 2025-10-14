@@ -214,27 +214,52 @@ class ManageOrderController extends Controller
     // ===== CLIENT/RESTAURANT METHODS =====
 
     public function AllClientOrders()
-    {
-        $client_id = auth()->guard('client')->user()->id;
-        $allData = Order::where('client_id', $client_id)->orderBy('id', 'DESC')->get();
+{
+    $clientId = auth()->guard('client')->id();
 
-        return view('client.backend.order.all_orders', compact('allData'));
+    $orders = Order::whereHas('orderItems.product', function ($query) use ($clientId) {
+        $query->where('client_id', $clientId);
+    })->latest()->get();
+
+    return view('client.backend.order.all_orders', compact('orders'));
+}
+
+
+
+  public function ClientOrderDetails($id)
+{
+    $order = Order::with('orderItems.product.client')->findOrFail($id);
+    $clientId = auth()->guard('client')->id();
+
+    if (! $clientId) {
+        abort(403, 'Client not logged in');
     }
 
-    public function ClientOrderDetails($id)
-    {
-        $order = Order::with('orderItems.product')->findOrFail($id);
-
-        // Pastikan client hanya bisa melihat pesanan restoran mereka
-        if ($order->client_id !== auth()->guard('client')->user()->id) {
-            abort(403);
-        }
-
-        $orderItem = OrderItem::where('order_id', $id)->get();
-        $timeline = $order->getTrackingTimeline();
-
-        return view('client.backend.order.order_details', compact('order', 'orderItem', 'timeline'));
+    // cek isi
+    if (! $order->orderItems->count()) {
+        abort(403, 'Order tidak punya item');
     }
+
+    $hasItem = $order->orderItems->contains(fn($item) =>
+        $item->product && $item->product->client_id == $clientId
+    );
+
+    if (! $hasItem) {
+        abort(403, 'Order tidak ada untuk client ini');
+    }
+
+    $orderItem = $order->orderItems->filter(fn($item) =>
+        $item->product && $item->product->client_id == $clientId
+    );
+
+    $totalPrice = $orderItem->sum(fn($item) => $item->price * $item->qty);
+    $timeline = $order->getTrackingTimeline();
+
+    return view('client.backend.order.client_order_details',
+        compact('order', 'orderItem', 'totalPrice', 'timeline')
+    );
+}
+
 
     // Method untuk client update courier info
     public function UpdateCourierInfo(Request $request, $id)

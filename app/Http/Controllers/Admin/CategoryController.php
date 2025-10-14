@@ -13,7 +13,7 @@ use App\Models\City;
 class CategoryController extends Controller
 {
     public function AllCategory(){
-        $category = Category::latest()->get();
+        $category = Category::latest()->paginate(10);
         return view('admin.backend.category.all_category', compact('category'));
     }
     // End Method
@@ -115,7 +115,7 @@ class CategoryController extends Controller
     //// All City Method in here
 
     public function AllCity(){
-        $city = City::latest()->get();
+        $city = City::latest()->paginate(10);
         return view('admin.backend.city.all_city', compact('city'));
     }
     // End Method

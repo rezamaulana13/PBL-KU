@@ -16,10 +16,23 @@
             <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                 <h4 class="font-weight-bold mt-0 mb-4">Daftar Pesanan</h4>
 
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <div class="bg-white card mb-4 order-list shadow-sm">
                     <div class="gold-members p-4">
                         <div class="table-responsive">
-                            {{-- Ubah kelas tabel untuk tampilan yang lebih bersih --}}
                             <table class="table table-hover w-100">
                                 <thead>
                                     <tr>
@@ -33,28 +46,40 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($allUserOrder as $key => $item)
+                                    @forelse ($allUserOrder as $key => $item)
                                     <tr>
                                         <td>{{ $key+1 }}</td>
-                                        <td>{{ $item->order_date }}</td>
-                                        <td>{{ $item->invoice_no }}</td>
-                                        <td>{{ $item->amount }}</td>
-                                        <td>{{ $item->payment_method }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->order_date)->format('d/m/Y') }}</td>
+                                        <td><strong>{{ $item->invoice_no }}</strong></td>
+                                        <td><strong>Rp {{ number_format($item->amount, 0, ',', '.') }}</strong></td>
                                         <td>
-                                            @if (strtolower(trim($item->status)) == 'pending')
+                                            @if($item->payment_method == 'stripe')
+                                                <span class="badge bg-primary">Stripe</span>
+                                            @elseif($item->payment_method == 'cash')
+                                                <span class="badge bg-success">Cash</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ $item->payment_method }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @php
+                                                $status = strtolower(trim($item->status));
+                                            @endphp
+                                            @if ($status == 'pending')
                                                 <span class="badge bg-info">Menunggu</span>
-                                            @elseif (strtolower(trim($item->status)) == 'confirm')
+                                            @elseif ($status == 'confirm')
                                                 <span class="badge bg-primary">Dikonfirmasi</span>
-                                            @elseif (strtolower(trim($item->status)) == 'processing')
-                                                <span class="badge bg-warning">Diproses</span>
-                                            @elseif (strtolower(trim($item->status)) == 'delivered')
-                                                <span class="badge bg-success">Dikirim</span>
-                                            @elseif (strtolower(trim($item->status)) == 'cancelled')
+                                            @elseif ($status == 'processing')
+                                                <span class="badge bg-warning text-dark">Diproses</span>
+                                            @elseif ($status == 'delivered')
+                                                <span class="badge bg-success">Terkirim</span>
+                                            @elseif ($status == 'cancelled')
                                                 <span class="badge bg-danger">Dibatalkan</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ ucfirst($item->status) }}</span>
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            {{-- Menu Aksi Dropdown yang Rapi --}}
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton-{{ $item->id }}" data-bs-toggle="dropdown" aria-expanded="false">
                                                     Aksi
@@ -70,14 +95,21 @@
                                                             <i class="fa fa-download"></i> Unduh Invoice
                                                         </a>
                                                     </li>
-                                                    @if(in_array(strtolower(trim($item->status)), ['pending', 'processing', 'confirm']))
+                                                    @php
+                                                        $status = strtolower(trim($item->status));
+                                                        // Pesanan hanya bisa dibatalkan jika statusnya: confirm atau processing
+                                                        // Tidak bisa dibatalkan jika: pending, delivered, atau cancelled
+                                                        $canCancel = in_array($status, ['confirm', 'processing']);
+                                                    @endphp
+                                                    @if($canCancel)
+                                                        <li><hr class="dropdown-divider"></li>
                                                         <li>
                                                             <form action="{{ route('user.order.cancel', $item->id) }}" method="POST"
-                                                                onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')">
+                                                                onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini? Tindakan ini tidak dapat dibatalkan.')">
                                                                 @csrf
                                                                 @method('POST')
                                                                 <button type="submit" class="dropdown-item text-danger">
-                                                                    <i class="fas fa-times"></i> Batalkan Pesanan
+                                                                    <i class="fas fa-times-circle"></i> Batalkan Pesanan
                                                                 </button>
                                                             </form>
                                                         </li>
@@ -86,7 +118,16 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    @endforeach
+                                    @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-shopping-bag fa-3x mb-3"></i>
+                                                <p>Belum ada pesanan</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -99,4 +140,32 @@
 </div>
     </div>
 </section>
+
+{{-- Sweet Alert untuk konfirmasi --}}
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Jika ada session success
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    @endif
+
+    // Jika ada session error
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            showConfirmButton: true
+        });
+    @endif
+</script>
+@endpush
+
 @endsection

@@ -12,35 +12,44 @@ $menuNamesString = implode(' . ',$menuNames);
 $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1')->first();
 @endphp
 
-<section class="restaurant-detailed-banner">
-    <div class="text-center">
-       <img class="img-fluid cover" src="{{ asset('upload/client_images/' . $client->cover_photo ) }}">
-    </div>
-    <div class="restaurant-detailed-header">
-       <div class="container">
-          <div class="row d-flex align-items-end">
-             <div class="col-md-8">
-                <div class="restaurant-detailed-header-left">
-                   <img class="img-fluid mr-3 float-left" alt="Raracookies" src="{{ asset('upload/client_images/' . $client->photo ) }}">
-                   <h2 class="text-white">{{ $client->name }}</h2>
-                   <p class="text-white mb-1"><i class="icofont-location-pin"></i>{{ $client->address }} <span class="badge badge-success">OPEN</span>
-                   </p>
-                   <p class="text-white mb-0"><i class="icofont-food-cart"></i>  {{$menuNamesString}}
-                   </p>
+<section class="restaurant-detailed-banner" style="width: 100vw; margin: 0; overflow: hidden;">
+    <img src="{{ asset('upload/client_images/' . $client->cover_photo) }}"
+         alt="Banner {{ $client->name }}"
+         style="width: 100%; height: 400px; object-fit: cover;">
+
+    <div class="restaurant-detailed-header" style="position: absolute; top: 0; left: 0; width: 100%;">
+        <div class="container">
+            <div class="row d-flex align-items-end">
+                <div class="col-md-8">
+                    <div class="restaurant-detailed-header-left">
+                        <img class="img-fluid mr-3 float-left" alt="{{ $client->name }}" src="{{ asset('upload/client_images/' . $client->photo ) }}">
+                        <h2 class="text-white">{{ $client->name }}</h2>
+                        <p class="text-white mb-1">
+                            <i class="icofont-location-pin"></i>{{ $client->address }}
+                            <span class="badge badge-success">OPEN</span>
+                        </p>
+                        <p class="text-white mb-0">
+                            <i class="icofont-food-cart"></i> {{$menuNamesString}}
+                        </p>
+                    </div>
                 </div>
-             </div>
-             <div class="col-md-4">
-                <div class="restaurant-detailed-header-right text-right">
-                   <button class="btn btn-success" type="button"><i class="icofont-clock-time"></i> 25–35 min
-                   </button>
-                   <h6 class="text-white mb-0 restaurant-detailed-ratings"><span class="generator-bg rounded text-white"><i class="icofont-star"></i> 4.9</span> 10.478 Laporan  <i class="ml-3 icofont-speech-comments"></i> 91 Ulasan</h6>
+                <div class="col-md-4">
+                    <div class="restaurant-detailed-header-right text-right">
+                        <button class="btn btn-success" type="button">
+                            <i class="icofont-clock-time"></i> 25–35 min
+                        </button>
+                        <h6 class="text-white mb-0 restaurant-detailed-ratings">
+                            <span class="generator-bg rounded text-white"><i class="icofont-star"></i> 4.9</span>
+                            10.478 Laporan
+                            <i class="ml-3 icofont-speech-comments"></i> 91 Ulasan
+                        </h6>
+                    </div>
                 </div>
-             </div>
-          </div>
-       </div>
+            </div>
+        </div>
     </div>
-    </div>
- </section>
+</section>
+
  <section class="offer-dedicated-nav bg-white border-top-0 shadow-sm">
     <div class="container">
        <div class="row">
@@ -423,7 +432,7 @@ $coupons = App\Models\Coupon::where('client_id',$client->id)->where('status','1'
 
       <h5 class="mb-4">Masukkan Komentar</h5>
       <p class="mb-2">Rating Pesanan</p>
-      
+
       <form method="post" action="{{ route('store.review') }}" enctype="multipart/form-data">
    @csrf
    <input type="hidden" name="client_id" value="{{ $client->id }}">

@@ -20,9 +20,10 @@ use App\Models\Banner;
 class ManageController extends Controller
 {
     public function AdminAllProduct(){
-        $product = Product::orderBy('id','desc')->get();
-        return view('admin.backend.product.all_product', compact('product'));
-    }
+        $product = Product::orderBy('id','desc')->paginate(10);
+        $category = Category::orderBy('category_name','asc')->get();
+        return view('admin.backend.product.all_product', compact('product', 'category'));
+}
     // End Method
     public function AdminAddProduct(){
         $category = Category::latest()->get();
@@ -101,7 +102,7 @@ class ManageController extends Controller
                 'discount_price' => $request->discount_price,
                 'most_populer' => $request->most_populer,
                 'best_seller' => $request->best_seller,
-                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'image' => $save_url,
             ]);
             $notification = array(
@@ -124,7 +125,7 @@ class ManageController extends Controller
                 'discount_price' => $request->discount_price,
                 'most_populer' => $request->most_populer,
                 'best_seller' => $request->best_seller,
-                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
             $notification = array(
@@ -152,8 +153,8 @@ class ManageController extends Controller
 
     ///////// FOR ALL Pending and Approve Restaurant method
     public function PendingRestaurant(){
-        $client = Client::where('status',0)->get();
-        return view('admin.backend.restaurant.pending_restaurant',compact('client'));
+        $restaurants = Client::where('status',0)->paginate(10);
+        return view('admin.backend.restaurant.pending_restaurant',compact('restaurants'));
     }
  // End Method
  public function ClientChangeStatus(Request $request){
@@ -164,15 +165,15 @@ class ManageController extends Controller
 }
  // End Method
  public function ApproveRestaurant(){
-    $client = Client::where('status',1)->get();
-    return view('admin.backend.restaurant.approve_restaurant',compact('client'));
+    $restaurants = Client::where('status',1)->paginate(10);
+    return view('admin.backend.restaurant.approve_restaurant',compact('restaurants'));
 }
 // End Method
 
 /// All Banner Method in here
 
 public function AllBanner(){
-    $banner = Banner::latest()->get();
+    $banner = Banner::latest()->paginate(10);
     return view('admin.backend.banner.all_banner',compact('banner'));
   }
 // End Method

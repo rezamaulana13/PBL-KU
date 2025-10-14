@@ -1,305 +1,362 @@
 <!doctype html>
 <html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Client Login | Raracookies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.icon') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
 
-    <head>
+    <!-- Bootstrap & Toastr -->
+    <link href="{{ asset('backend/assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-        <meta charset="utf-8" />
-        <title>Client Login</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-        <meta content="Themesbrand" name="author" />
-        <!-- App favicon -->
-        <link rel="shortcut icon" href="{{asset('backend/assets/images/favicon.icon')}}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        <!-- preloader css -->
-        <link rel="stylesheet" href="{{asset('backend/assets/css/preloader.min.css')}} "type="text/css" />
+        body {
+            background: linear-gradient(135deg, #f5f9ff, #e6f2ff);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+        }
 
-        <!-- Bootstrap Css -->
-        <link href="{{asset('backend/assets/css/bootstrap.min.css')}}"
-         id="bootstrap-style" rel="stylesheet" type="text/css" />
+        .auth-container {
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 40, 100, 0.12);
+        }
 
-        <!-- Icons Css -->
-        <link href="{{asset('backend/assets/css/icons.min.css')}}"
-        rel="stylesheet" type="text/css" />
-        <!-- App Css-->
-        <link href="{{asset('backend/assets/css/app.min.css')}}"
-        id="app-style" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
+        .auth-brand {
+            background: #2c7be5;
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
 
-    </head>
+        .auth-brand img {
+            height: 60px;
+            margin-bottom: 24px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 6px;
+        }
 
-    <body>
+        .auth-brand h2 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
 
-    <!-- <body data-layout="horizontal"> -->
-        <div class="auth-page">
-            <div class="container-fluid p-0">
-                <div class="row g-0">
-                    <div class="col-xxl-3 col-lg-4 col-md-5">
-                        <div class="auth-full-page-content d-flex p-sm-5 p-4">
-                            <div class="w-100">
-                                <div class="d-flex flex-column h-100">
-                                    <div class="mb-4 mb-md-5 text-center">
-                                        <a href="index.html" class="d-block auth-logo">
-                                            <img src="{{asset('backend/assets/images/logo-sm.svg')}}" alt="" height="28"> <span class="logo-txt">Client Login</span>
-                                        </a>
-                                    </div>
-                                    <div class="auth-content my-auto">
-                                        <div class="text-center">
-                                            <h5 class="mb-0">Welcome Back !</h5>
-                                            <p class="text-muted mt-2">Sign in to continue to Client.</p>
-                                        </div>
+        .auth-brand p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
 
-                                        @if ($errors->any())
-                                        @foreach ($errors->all() as $errors )
-                                            <li>{{ $errors }}</li>
-                                        @endforeach
-                                    @endif
+        .auth-forms {
+            width: 100%;
+            padding: 50px 40px;
+        }
 
-                                    @if (Session::has('error'))
-                                        <li>{{Session::get('error') }}</li>
-                                    @endif
-                                    @if (Session::has('succes'))
-                                        <li>{{Session::get('succes') }}</li>
-                                    @endif
+        .form-title {
+            font-size: 1.7rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
 
+        .form-subtitle {
+            color: #7b8794;
+            margin-bottom: 32px;
+        }
 
-                                        <form class="mt-4 pt-2" action="{{route ('client.login_submit')}}" method="post">
-                                          @csrf
-                                            <div class="mb-3">
-                                                <label class="form-label">Email</label>
-                                                <input type="email" name ="email" class="form-control" id="email"
-                                              placeholder="Enter Email">
-                                            </div>
-                                            <div class="mb-3">
-                                                <div class="d-flex align-items-start">
-                                                    <div class="flex-grow-1">
-                                                        <label class="form-label">Password</label>
-                                                    </div>
-                                                    <div class="flex-shrink-0">
-                                                        <div class="">
-                                                            <a href="{{route('admin.forget_password')}}"
-                                                            class="text-muted">Forgot password?</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
+        .input-group {
+            position: relative;
+            margin-bottom: 22px;
+        }
 
-                                                <div class="input-group auth-pass-inputgroup">
-                                                    <input type="password" name="password" class="form-control" placeholder="Enter password" aria-label="Password" aria-describedby="password-addon">
-                                                    <button class="btn btn-light shadow-none ms-0" type="button" id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-4">
-                                                <div class="col">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="remember-check">
-                                                        <label class="form-check-label" for="remember-check">
-                                                            Remember me
-                                                        </label>
-                                                    </div>
-                                                </div>
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2c7be5;
+            font-size: 1.2rem;
+        }
 
-                                            </div>
-                                            <div class="mb-3">
-                                                <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Log In</button>
-                                            </div>
-                                        </form>
+        .form-control {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid #eef2f7;
+            border-radius: 14px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
 
-                                        <div class="mt-4 pt-2 text-center">
-                                            <div class="signin-other-title">
-                                                <h5 class="font-size-14 mb-3 text-muted fw-medium">- Sign in with -</h5>
-                                            </div>
+        .form-control:focus {
+            border-color: #2c7be5;
+            box-shadow: 0 0 0 3px rgba(44, 123, 229, 0.15);
+        }
 
-                                            <ul class="list-inline mb-0">
-                                                <li class="list-inline-item">
-                                                    <a href="javascript:void()"
-                                                        class="social-list-item bg-primary text-white border-primary">
-                                                        <i class="mdi mdi-facebook"></i>
-                                                    </a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="javascript:void()"
-                                                        class="social-list-item bg-info text-white border-info">
-                                                        <i class="mdi mdi-twitter"></i>
-                                                    </a>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <a href="javascript:void()"
-                                                        class="social-list-item bg-danger text-white border-danger">
-                                                        <i class="mdi mdi-google"></i>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #2c7be5;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
 
-                                        <div class="mt-5 text-center">
-                                            <p class="text-muted mb-0">Don't have an account ? <a href="{{route('client.register')}}"
-                                                    class="text-primary fw-semibold"> Signup now </a> </p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4 mt-md-5 text-center">
-                                        <p class="mb-0">© <script>document.write(new Date().getFullYear())</script> Minia   . Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end auth full page content -->
-                    </div>
-                    <!-- end col -->
-                    <div class="col-xxl-9 col-lg-8 col-md-7">
-                        <div class="auth-bg pt-md-5 p-4 d-flex">
-                            <div class="bg-overlay bg-primary"></div>
-                            <ul class="bg-bubbles">
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                            </ul>
-                            <!-- end bubble effect -->
-                            <div class="row justify-content-center align-items-center">
-                                <div class="col-xl-7">
-                                    <div class="p-0 p-sm-4 px-xl-0">
-                                        <div id="reviewcarouselIndicators" class="carousel slide" data-bs-ride="carousel">
-                                            <div class="carousel-indicators carousel-indicators-rounded justify-content-start ms-0 mb-0">
-                                                <button type="button" data-bs-target="#reviewcarouselIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                                <button type="button" data-bs-target="#reviewcarouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                                <button type="button" data-bs-target="#reviewcarouselIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                            </div>
-                                            <!-- end carouselIndicators -->
-                                            <div class="carousel-inner">
-                                                <div class="carousel-item active">
-                                                    <div class="testi-contain text-white">
-                                                        <i class="bx bxs-quote-alt-left text-success display-6"></i>
+        .btn-auth {
+            background: #2c7be5;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.3s;
+        }
 
-                                                        <h4 class="mt-4 fw-medium lh-base text-white">“I feel confident
-                                                            imposing change
-                                                            on myself. It's a lot more progressing fun than looking back.
-                                                            That's why
-                                                            I ultricies enim
-                                                            at malesuada nibh diam on tortor neaded to throw curve balls.”
-                                                        </h4>
-                                                        <div class="mt-4 pt-3 pb-5">
-                                                            <div class="d-flex align-items-start">
-                                                                <div class="flex-shrink-0">
-                                                                    <img src="{{asset('backend/assets/images/users/avatar-1.jpg')}}" class="avatar-md img-fluid rounded-circle" alt="...">
-                                                                </div>
-                                                                <div class="flex-grow-1 ms-3 mb-4">
-                                                                    <h5 class="font-size-18 text-white">Richard Drews
-                                                                    </h5>
-                                                                    <p class="mb-0 text-white-50">Web Designer</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+        .btn-auth:hover {
+            background: #1a68d1;
+        }
 
-                                                <div class="carousel-item">
-                                                    <div class="testi-contain text-white">
-                                                        <i class="bx bxs-quote-alt-left text-success display-6"></i>
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
 
-                                                        <h4 class="mt-4 fw-medium lh-base text-white">“Our task must be to
-                                                            free ourselves by widening our circle of compassion to embrace
-                                                            all living
-                                                            creatures and
-                                                            the whole of quis consectetur nunc sit amet semper justo. nature
-                                                            and its beauty.”</h4>
-                                                        <div class="mt-4 pt-3 pb-5">
-                                                            <div class="d-flex align-items-start">
-                                                                <div class="flex-shrink-0">
-                                                                    <img src="{{asset('backend/assets/images/users/avatar-2.jpg')}}" class="avatar-md img-fluid rounded-circle" alt="...">
-                                                                </div>
-                                                                <div class="flex-grow-1 ms-3 mb-4">
-                                                                    <h5 class="font-size-18 text-white">Rosanna French
-                                                                    </h5>
-                                                                    <p class="mb-0 text-white-50">Web Developer</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+        .divider::before,
+        .divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 42%;
+            height: 1px;
+            background: #e9ecef;
+        }
 
-                                                <div class="carousel-item">
-                                                    <div class="testi-contain text-white">
-                                                        <i class="bx bxs-quote-alt-left text-success display-6"></i>
+        .divider::before {
+            left: 0;
+        }
 
-                                                        <h4 class="mt-4 fw-medium lh-base text-white">“I've learned that
-                                                            people will forget what you said, people will forget what you
-                                                            did,
-                                                            but people will never forget
-                                                            how donec in efficitur lectus, nec lobortis metus you made them
-                                                            feel.”</h4>
-                                                        <div class="mt-4 pt-3 pb-5">
-                                                            <div class="d-flex align-items-start">
-                                                                <img src="{{asset('backend/assets/images/users/avatar-3.jpg')}}"
-                                                                    class="avatar-md img-fluid rounded-circle" alt="...">
-                                                                <div class="flex-1 ms-3 mb-4">
-                                                                    <h5 class="font-size-18 text-white">Ilse R. Eaton</h5>
-                                                                    <p class="mb-0 text-white-50">Manager
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end carousel-inner -->
-                                        </div>
-                                        <!-- end review carousel -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- end col -->
-                </div>
-                <!-- end row -->
-            </div>
-            <!-- end container fluid -->
-        </div>
+        .divider::after {
+            right: 0;
+        }
 
+        .switch-form {
+            text-align: center;
+            margin-top: 24px;
+            color: #6c757d;
+        }
 
-        <!-- JAVASCRIPT -->
-        <script src="{{asset('backend/assets/libs/jquery/jquery.min.js')}}"></script>
-        <script src="{{asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-        <script src="{{asset('backend/assets/libs/metismenu/metisMenu.min.js')}}"></script>
-        <script src="{{asset('backend/assets/libs/simplebar/simplebar.min.js')}}"></script>
-        <script src="{{asset('backend/assets/libs/node-waves/waves.min.js')}}"></script>
-        <script src="{{asset('backend/assets/libs/feather-icons/feather.min.js')}}"></script>
-        <!-- pace js -->
-        <script src="{{asset('backend/assets/libs/pace-js/pace.min.js')}}"></script>
-        <!-- password addon init -->
-        <script src="{{asset('backend/assets/js/pages/pass-addon.init.js')}}"></script>
+        .switch-form a {
+            color: #2c7be5;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 6px;
+        }
 
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-        <script>
-            @if(Session::has('message'))
-            var type = "{{ Session::get('alert-type','info') }}"
-            switch(type){
-               case 'info':
-               toastr.info(" {{ Session::get('message') }} ");
-               break;
+        .footer-text {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.85rem;
+        }
 
-               case 'success':
-               toastr.success(" {{ Session::get('message') }} ");
-               break;
-
-               case 'warning':
-               toastr.warning(" {{ Session::get('message') }} ");
-               break;
-
-               case 'error':
-               toastr.error(" {{ Session::get('message') }} ");
-               break;
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
             }
-            @endif
-           </script>
+            .auth-brand {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
 
+    <div class="auth-container">
+        <!-- Brand Side -->
+        <div class="auth-brand">
+    <div class="brand-logo mb-4">
+        <!-- Ganti dengan logo PNG transparan berkualitas -->
+        <img src="{{ asset('backend/assets/images/logo.jpeg') }}"
+             alt="Raracookies"
+             onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';"
+             style="height: 72px; max-width: 100%; object-fit: contain;">
+        <div id="fallback-logo" style="display:none; text-align:center;">
+            <div style="
+                font-family: 'Poppins', sans-serif;
+                font-weight: 800;
+                font-size: 2.1rem;
+                background: linear-gradient(90deg, #74c6d4, #35ffd3);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                letter-spacing: -0.5px;
+            ">
+                Rara<span style="color:#3f5c55;">cookies</span>
+            </div>
+        </div>
+    </div>
+    <h2 class="brand-title">Welcome to Raracookies</h2>
+    <p class="brand-desc">Tempat terbaik untuk memesan cookies premium dengan rasa yang menghangatkan hati.</p>
+</div>
 
-    </body>
+<style>
+.auth-brand {
+    background: linear-gradient(135deg, #e3f8ff, #39acf8);
+    color: #5C4B3F;
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    border-right: 1px solid rgba(52, 113, 124, 0.2);
+}
+.brand-title {
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin: 16px 0 12px;
+    color: #4950af;
+}
+.brand-desc {
+    opacity: 0.9;
+    line-height: 1.6;
+    font-size: 1.02rem;
+    max-width: 320px;
+    margin: 0 auto;
+}
+</style>
 
+        <!-- Form Side -->
+        <div class="auth-forms">
+            <!-- Login Form (Default) -->
+            <div id="loginForm">
+                <h2 class="form-title">Sign In</h2>
+                <p class="form-subtitle">Masuk untuk mengelola pesanan Anda</p>
+
+                <form method="POST" action="{{ route('client.login_submit') }}">
+                    @csrf
+                    <div class="input-group">
+                        <i class="mdi mdi-email-outline"></i>
+                        <input type="email" name="email" class="form-control" placeholder="Email Anda" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="mdi mdi-lock-outline"></i>
+                        <input type="password" id="loginPass" name="password" class="form-control" placeholder="Password" required>
+                        <button type="button" class="toggle-password" onclick="togglePass('loginPass')">
+                            <i class="mdi mdi-eye-outline"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="btn-auth">Masuk</button>
+                </form>
+
+                <div class="switch-form">
+                    Belum punya akun? <a href="#" onclick="showForm('register')">Daftar Sekarang</a>
+                </div>
+            </div>
+
+            <!-- Register Form (Hidden by default) -->
+            <div id="registerForm" style="display:none;">
+                <h2 class="form-title">Create Account</h2>
+                <p class="form-subtitle">Daftar gratis dalam 30 detik</p>
+
+                <form method="POST" action="{{ route('client.register') }}">
+                    @csrf
+                    <div class="input-group">
+                        <i class="mdi mdi-account-outline"></i>
+                        <input type="text" name="name" class="form-control" placeholder="Nama Lengkap" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="mdi mdi-email-outline"></i>
+                        <input type="email" name="email" class="form-control" placeholder="Email Anda" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="mdi mdi-lock-outline"></i>
+                        <input type="password" id="regPass" name="password" class="form-control" placeholder="Password" required>
+                        <button type="button" class="toggle-password" onclick="togglePass('regPass')">
+                            <i class="mdi mdi-eye-outline"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="btn-auth">Daftar Akun</button>
+                </form>
+
+                <div class="switch-form">
+                    Sudah punya akun? <a href="#" onclick="showForm('login')">Masuk di Sini</a>
+                </div>
+            </div>
+
+            <div class="footer-text">
+                &copy; <script>document.write(new Date().getFullYear())</script> Raracookies — Client Portal
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        function togglePass(id) {
+            const input = document.getElementById(id);
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'mdi mdi-eye-off-outline';
+            } else {
+                input.type = 'password';
+                icon.className = 'mdi mdi-eye-outline';
+            }
+        }
+
+        function showForm(type) {
+            const login = document.getElementById('loginForm');
+            const register = document.getElementById('registerForm');
+            if (type === 'login') {
+                login.style.display = 'block';
+                register.style.display = 'none';
+            } else {
+                login.style.display = 'none';
+                register.style.display = 'block';
+            }
+        }
+
+        // Toastr setup
+        @if(Session::has('message'))
+            var type = "{{ Session::get('alert-type','info') }}";
+            var msg = "{{ Session::get('message') }}";
+            toastr[type](msg);
+        @endif
+    </script>
+
+</body>
 </html>

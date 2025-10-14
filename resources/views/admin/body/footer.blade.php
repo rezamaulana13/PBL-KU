@@ -1,13 +1,18 @@
-<footer class="footer">
+<footer class="footer mt-auto py-3" style="background-color: #fafafa; border-top: 1px solid #eee;">
     <div class="container-fluid">
-        <div class="row">
+        <div class="row align-items-center">
             <div class="col-sm-6">
-                <script>document.write(new Date().getFullYear())</script> ©RaraCookies.
+                <small class="text-muted">
+                    &copy; <script>document.write(new Date().getFullYear())</script> RaraCookies. All rights reserved.
+                </small>
             </div>
-            <div class="col-sm-6">
-                <div class="text-sm-end d-none d-sm-block">
-                    Aplikasi minimalis<a href="#!" class="text-decoration-underline">RaraCookies</a>
-                </div>
+            <div class="col-sm-6 text-sm-end mt-2 mt-sm-0">
+                <small class="text-muted">
+                    Aplikasi minimalis oleh
+                    <a href="#!" class="text-reset fw-medium" style="text-decoration: none;">
+                        RaraCookies
+                    </a>
+                </small>
             </div>
         </div>
     </div>

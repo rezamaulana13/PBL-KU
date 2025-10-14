@@ -66,7 +66,7 @@ class ReviewController extends Controller
      */
     public function AdminPendingReview()
     {
-        $pendingReview = Review::where('status', 0)->orderBy('id', 'desc')->get();
+        $pendingReview = Review::where('status', 0)->orderBy('id', 'desc')->paginate(10);
         return view('admin.backend.review.view_pending_review', compact('pendingReview'));
     }
 
@@ -75,7 +75,7 @@ class ReviewController extends Controller
      */
     public function AdminApproveReview()
     {
-        $approveReview = Review::where('status', 1)->orderBy('id', 'desc')->get();
+        $approveReview = Review::where('status', 1)->orderBy('id', 'desc')->paginate(10);
         return view('admin.backend.review.view_approve_review', compact('approveReview'));
     }
 

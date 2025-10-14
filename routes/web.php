@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::match(['get', 'post'], '/user/logout', [UserController::class, 'UserLogout'])->name('user.logout');
     Route::get('/change/password', [UserController::class, 'ChangePassword'])->name('change.password');
     Route::post('/user/password/update', [UserController::class, 'UserPasswordUpdate'])->name('user.password.update');
+    // Rute yang hilang: Halaman Daftar Pesanan Pengguna
+
 
     // Wishlist
     Route::get('/all/wishlist', [HomeController::class, 'AllWishlist'])->name('all.wishlist');
@@ -58,7 +60,6 @@ Route::middleware('auth')->group(function () {
 
 }); // End Auth Middleware
 
-require __DIR__.'/auth.php';
 
 // =========================================================================
 // Rute Khusus Admin (Middleware 'admin')
@@ -117,6 +118,10 @@ Route::middleware('admin')->group(function () {
         Route::get('/delivered/order', 'DeliveredOrder')->name('delivered.order');
         Route::get('/cancelled/order', 'CancelledOrder')->name('cancelled.order');
 
+        // routes/web.php
+        Route::post('/user/order/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('user.order.cancel');
+
+
         // Detail & Update Status
         Route::get('/admin/order/details/{id}', 'AdminOrderDetails')->name('admin.order.details');
         Route::get('/pending_to_confirm/{id}', 'PendingToConfirm')->name('pending_to_confirm');
@@ -153,19 +158,19 @@ Route::post('/admin/reset_password_submit', [AdminController::class, 'AdminReset
 // =========================================================================
 // Rute Khusus Client/Restaurant (Middleware 'client', 'status')
 // =========================================================================
+// Routes PUBLIC
+Route::get('/client/login', [ClientController::class, 'ClientLogin'])->name('client.login');
+Route::get('/client/register', [ClientController::class, 'ClientRegister'])->name('client.register');
+Route::post('/client/register/submit', [ClientController::class, 'ClientRegisterSubmit'])->name('client.register.submit');
+Route::post('/client/login_submit', [ClientController::class, 'ClientLoginSubmit'])->name('client.login_submit');
+
+// Routes PRIVATE
 Route::middleware('client')->group(function () {
-    // Client Dasar
     Route::get('/client/dashboard', [ClientController::class, 'ClientDashboard'])->name('client.dashboard');
     Route::get('/client/profile', [ClientController::class, 'ClientProfile'])->name('client.profile');
     Route::post('/client/profile/store', [ClientController::class, 'ClientProfileStore'])->name('client.profile.store');
     Route::get('/client/change/password', [ClientController::class, 'ClientChangePassword'])->name('client.change.password');
     Route::post('/client/password/update', [ClientController::class, 'ClientPasswordUpdate'])->name('client.password.update');
-
-    // Autentikasi Client diluar group middleware 'status'
-    Route::get('/client/login', [ClientController::class, 'ClientLogin'])->name('client.login');
-    Route::get('/client/register', [ClientController::class, 'ClientRegister'])->name('client.register');
-    Route::post('/client/register/submit', [ClientController::class, 'ClientRegisterSubmit'])->name('client.register.submit');
-    Route::post('/client/login_submit', [ClientController::class, 'ClientLoginSubmit'])->name('client.login_submit');
     Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
 });
 
@@ -186,7 +191,8 @@ Route::middleware(['client','status'])->group(function () {
         Route::get('/add/product', 'AddProduct')->name('add.product');
         Route::post('/store/product', 'StoreProduct')->name('product.store');
         Route::get('/edit/product/{id}', 'EditProduct')->name('edit.product');
-        Route::post('/update/product', 'UpdateProduct')->name('product.update');
+        Route::put('/update/product', [RestaurantController::class, 'UpdateProduct'])->name('product.update');
+
         Route::get('/delete/product/{id}', 'DeleteProduct')->name('delete.product');
 
         // Galeri
@@ -245,11 +251,13 @@ Route::controller(HomeController::class)->group(function(){
 
 Route::controller(CartController::class)->group(function(){
     Route::get('/add_to_cart/{id}', 'AddToCart')->name('add_to_cart');
-    Route::post('/cart/update-quantity', 'updateCartQuanity')->name('cart.updateQuantity');
+    Route::post('/cart/update-quantity', 'updateCartQuantity')->name('cart.updateQuantity');
     Route::post('/cart/remove', 'CartRemove')->name('cart.remove');
     Route::post('/apply-coupon', 'ApplyCoupon');
     Route::get('/remove-coupon', 'CouponRemove');
     Route::get('/checkout', 'ShopCheckout')->name('checkout');
+    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+
 });
 
 Route::controller(OrderController::class)->group(function(){
@@ -262,6 +270,7 @@ Route::get('/thanks', function() {
     return view('frontend.checkout.thanks');
 })->name('thanks');
 
+
 Route::controller(ReviewController::class)->group(function(){
     Route::post('/store/review', 'StoreReview')->name('store.review');
 });
@@ -271,4 +280,6 @@ Route::controller(FilterController::class)->group(function(){
     Route::get('/filter/products', 'FilterProducts')->name('filter.products');
 });
 });
+
+require __DIR__.'/auth.php';
 
