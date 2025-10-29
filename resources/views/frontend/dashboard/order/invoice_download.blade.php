@@ -8,11 +8,11 @@
     <style type="text/css">
         /* Reset & Font */
         * {
-            font-family: 'Helvetica Neue', Arial, sans-serif; /* Font lebih modern */
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.5;
         }
         body {
-            color: #444444; /* Darker Gray for readability */
+            color: #444444;
             font-size: 10px;
         }
         table {
@@ -23,10 +23,10 @@
 
         /* Colors & Branding */
         .accent-navy {
-            color: #003366; /* Navy Blue Accent */
+            color: #003366;
         }
         .accent-gold {
-            color: #B8860B; /* Gold Accent */
+            color: #B8860B;
         }
         .bg-navy {
             background-color: #003366;
@@ -43,7 +43,7 @@
         /* Layout & Typography */
         .header-block {
             padding: 20px;
-            border-bottom: 3px solid #003366; /* Garis pemisah tegas */
+            border-bottom: 3px solid #003366;
         }
         .info-label {
             color: #888888;
@@ -62,7 +62,7 @@
         .status-pill {
             display: inline-block;
             padding: 3px 8px;
-            background-color: #28A745; /* Success Green */
+            background-color: #28A745;
             color: white;
             border-radius: 4px;
             font-weight: bold;
@@ -85,6 +85,14 @@
 
 </head>
 <body>
+
+    @php
+        // HITUNG SUBTOTAL DARI SEMUA ITEM PESANAN
+        $subtotalPrice = 0;
+        foreach ($order->orderItems as $item) {
+            $subtotalPrice += $item->price * $item->qty;
+        }
+    @endphp
 
     <table width="100%" class="header-block">
         <tr>
@@ -166,14 +174,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($orderItem as $index => $item)
+            {{-- PERBAIKAN: Mengakses item melalui hubungan $order->orderItems --}}
+            @foreach ($order->orderItems as $index => $item)
             <tr class="bg-light-gray" style="background-color: {{ $index % 2 == 0 ? '#FFFFFF' : '#F8F8F8' }};">
                 <td align="center" style="padding-left: 15px;">{{ $index + 1 }}</td>
                 <td>{{ $item->product->name }}</td>
                 <td>{{ $item->product->code }}</td>
                 <td align="center">{{ $item->qty }}</td>
                 <td>{{ $item->product->client->name }}</td>
-                <td align="right" style="font-weight: bold; padding-right: 15px;">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                {{-- PERBAIKAN: Menampilkan Total Harga (Harga Satuan * Qty) --}}
+                <td align="right" style="font-weight: bold; padding-right: 15px;">Rp {{ number_format($item->price * $item->qty, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>
@@ -198,7 +208,8 @@
                 <table border="0" width="100%">
                     <tr style="font-size: 11px;">
                         <td style="padding: 5px 0;">Subtotal:</td>
-                        <td align="right" style="padding: 5px 0;">Rp {{ number_format($totalPrice, 0, ',', '.') }}</td>
+                        {{-- PERBAIKAN: Menggunakan $subtotalPrice yang sudah dihitung --}}
+                        <td align="right" style="padding: 5px 0;">Rp {{ number_format($subtotalPrice, 0, ',', '.') }}</td>
                     </tr>
                     {{-- Asumsi $order->shipping_cost tersedia --}}
                     {{-- <tr style="font-size: 11px;">

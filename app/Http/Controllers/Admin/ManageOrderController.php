@@ -206,7 +206,7 @@ class ManageOrderController extends Controller
             abort(403);
         }
 
-        $pdf = Pdf::loadView('frontend.order.invoice_download', compact('order'));
+        $pdf = Pdf::loadView('frontend.dashboard.order.invoice_download', compact('order'));
 
         return $pdf->download('invoice_'.$order->invoice_no.'.pdf');
     }

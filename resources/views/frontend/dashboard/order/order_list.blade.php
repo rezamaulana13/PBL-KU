@@ -97,15 +97,14 @@
                                                     </li>
                                                     @php
                                                         $status = strtolower(trim($item->status));
-                                                        // Pesanan hanya bisa dibatalkan jika statusnya: confirm atau processing
-                                                        // Tidak bisa dibatalkan jika: pending, delivered, atau cancelled
-                                                        $canCancel = in_array($status, ['confirm', 'processing']);
+                                                        // LOGIKA DIREVISI: Pesanan HANYA bisa dibatalkan jika statusnya: pending
+                                                        $canCancel = in_array($status, ['pending']);
                                                     @endphp
                                                     @if($canCancel)
                                                         <li><hr class="dropdown-divider"></li>
                                                         <li>
                                                             <form action="{{ route('user.order.cancel', $item->id) }}" method="POST"
-                                                                onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini? Tindakan ini tidak dapat dibatalkan.')">
+                                                                onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan yang belum diproses ini? Tindakan ini tidak dapat dibatalkan.')">
                                                                 @csrf
                                                                 @method('POST')
                                                                 <button type="submit" class="dropdown-item text-danger">

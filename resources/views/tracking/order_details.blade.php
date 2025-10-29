@@ -1,459 +1,927 @@
 @extends('frontend.dashboard.dashboard')
 
 @section('user')
-<div class="page-content">
-    <div class="container-fluid">
 
-        {{-- Page Header --}}
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Detail & Tracking Pesanan #{{ $order->invoice_no }}</h4>
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="{{ route('user.track.order') }}">Pesanan</a></li>
-                            <li class="breadcrumb-item active">Detail</li>
-                        </ol>
+<div class="order-detail-container">
+    <!-- Header Section -->
+    <div class="detail-header">
+        <div class="header-top">
+            <div class="title-section">
+                <h1 class="page-title">
+                    <i class="fas fa-box-open"></i>
+                    Detail Pesanan
+                </h1>
+                <p class="invoice-number">#{{ $order->invoice_no }}</p>
+            </div>
+            <div class="header-actions">
+                <a href="{{ route('user.track.order') }}" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Kembali
+                </a>
+            </div>
+        </div>
+
+        <nav class="breadcrumb-nav">
+            <a href="{{ route('dashboard') }}" class="breadcrumb-link">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="{{ route('user.track.order') }}" class="breadcrumb-link">Pesanan</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Detail</span>
+        </nav>
+    </div>
+
+    <div class="detail-content">
+        <!-- Left Column -->
+        <div class="left-column">
+
+            <!-- Status Card -->
+            <div class="status-card">
+                @php
+                    $statusConfig = [
+                        'Pending' => ['color' => 'warning', 'icon' => 'fas fa-clock', 'gradient' => 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'],
+                        'Confirm' => ['color' => 'info', 'icon' => 'fas fa-check', 'gradient' => 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'],
+                        'Processing' => ['color' => 'primary', 'icon' => 'fas fa-cog', 'gradient' => 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)'],
+                        'Shipped' => ['color' => 'primary', 'icon' => 'fas fa-truck-fast', 'gradient' => 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)'],
+                        'Delivered' => ['color' => 'success', 'icon' => 'fas fa-check-circle', 'gradient' => 'linear-gradient(135deg, #10b981 0%, #059669 100%)'],
+                        'Cancelled' => ['color' => 'danger', 'icon' => 'fas fa-times-circle', 'gradient' => 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)']
+                    ];
+                    $currentStatus = $statusConfig[$order->status] ?? $statusConfig['Pending'];
+                @endphp
+
+                <div class="status-hero" style="background: {{ $currentStatus['gradient'] }}">
+                    <div class="status-icon">
+                        <i class="{{ $currentStatus['icon'] }}"></i>
                     </div>
+                    <div class="status-info">
+                        <span class="status-label">Status Saat Ini</span>
+                        <h2 class="status-value">{{ $order->status }}</h2>
+                    </div>
+                </div>
+
+                <div class="status-details">
+                    @php
+                        $current_status = $order->status;
+                        $location_detail = 'Menunggu update dari sistem.';
+                        $latest_step = collect($timeline)->filter(fn($step) => $step['completed'])->last();
+
+                        if ($latest_step) {
+                            if ($current_status == 'Delivered') {
+                                $location_detail = 'Telah diterima oleh ' . ($order->name ?? 'Penerima') . ' pada ' . \Carbon\Carbon::parse($order->delivered_date ?? $latest_step['time'])->format('d M Y H:i');
+                            } elseif ($current_status == 'Processing' || $current_status == 'Shipped') {
+                                $location_detail = 'Pesanan sedang dalam proses pengiriman';
+                            } elseif ($current_status == 'Confirm') {
+                                $location_detail = 'Pesanan sedang dipersiapkan';
+                            }
+                        }
+                        if ($current_status == 'Cancelled') {
+                            $location_detail = 'Pesanan ini telah dibatalkan.';
+                        }
+                    @endphp
+
+                    <div class="detail-item">
+                        <i class="fas fa-info-circle"></i>
+                        <p>{{ $location_detail }}</p>
+                    </div>
+
+                    @if($order->tracking_no)
+                    <div class="tracking-info">
+                        <div class="tracking-label">
+                            <i class="fas fa-barcode"></i>
+                            Nomor Resi
+                        </div>
+                        <div class="tracking-number">{{ $order->tracking_no }}</div>
+                        <div class="tracking-hint">
+                            <i class="fas fa-shield-alt"></i>
+                            Gunakan nomor ini untuk melacak di website kurir
+                        </div>
+                    </div>
+                    @else
+                    <div class="no-tracking-info">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Nomor resi belum tersedia, pesanan masih dalam persiapan
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Timeline Card -->
+            <div class="timeline-card">
+                <div class="card-header">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    <h3>Riwayat Status Pesanan</h3>
+                </div>
+
+                <div class="timeline-container">
+                    @foreach($timeline as $index => $step)
+                    <div class="timeline-step {{ $step['completed'] ? 'completed' : 'pending' }}">
+                        <div class="timeline-marker">
+                            <div class="marker-dot">
+                                @if($step['completed'])
+                                    <i class="fas fa-check"></i>
+                                @else
+                                    <div class="dot-empty"></div>
+                                @endif
+                            </div>
+                            @if($index < count($timeline) - 1)
+                            <div class="marker-line"></div>
+                            @endif
+                        </div>
+                        <div class="timeline-content">
+                            <h4>{{ $step['label'] }}</h4>
+                            @if($step['time'])
+                                <span class="timeline-time">
+                                    <i class="fas fa-clock"></i>
+                                    {{ \Carbon\Carbon::parse($step['time'])->format('d M Y, H:i') }} WIB
+                                </span>
+                            @else
+                                <span class="timeline-time pending">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    Menunggu...
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                @if($order->status != 'Delivered' && $order->status != 'Cancelled')
+                <div class="timeline-info">
+                    <i class="fas fa-info-circle"></i>
+                    Status akan diperbarui secara berkala selama proses pengiriman
+                </div>
+                @endif
+            </div>
+
+            <!-- Products Card -->
+            <div class="products-card">
+                <div class="card-header">
+                    <i class="fas fa-cookie-bite"></i>
+                    <h3>Detail Produk</h3>
+                </div>
+
+                <div class="products-list">
+                    @foreach($orderItem as $item)
+                    <div class="product-item">
+                        <div class="product-image">
+                            <img src="{{ asset($item->product->image ?? 'upload/no_image.jpg') }}"
+                                alt="{{ $item->product->name ?? 'Produk' }}">
+                        </div>
+                        <div class="product-info">
+                            <h4>{{ $item->product->name ?? 'Nama Produk Tidak Ditemukan' }}</h4>
+                            @if($item->size || $item->color)
+                                <p class="product-variant">
+                                    @if($item->size) Varian: {{ $item->size }} @endif
+                                    @if($item->color) • Rasa: {{ $item->color }} @endif
+                                </p>
+                            @endif
+                            <div class="product-price">
+                                <span class="price-label">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                                <span class="quantity">× {{ $item->qty }}</span>
+                            </div>
+                        </div>
+                        <div class="product-total">
+                            Rp {{ number_format($item->price * $item->qty, 0, ',', '.') }}
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
 
-        <hr>
+        <!-- Right Column -->
+        <div class="right-column">
 
-        <div class="row">
-
-            {{-- KOLOM KIRI (Tracking, Map, & Produk) --}}
-            <div class="col-lg-8">
-
-                {{-- KARTU PETA/MAP (New Section) 🗺️ --}}
-                <div class="card shadow-lg mb-4 border-0 border-top border-primary border-4">
-                    <div class="card-body p-0">
-                        <h5 class="card-header bg-white border-0 py-3">
-                            <i class="fas fa-map-marked-alt text-primary me-2"></i> Posisi Paket Terkini
-                        </h5>
-                        <div class="p-4">
-                            {{--
-                                INTEGRASI PETA:
-                                Untuk implementasi nyata, ganti div ini dengan library peta (misal: Google Maps JS API, Leaflet/OpenStreetMap).
-                                Placeholder di bawah menggunakan iframe dari Google Maps yang harus disesuaikan.
-                                Anda perlu mendapatkan koordinat paket secara real-time dari sistem logistik Anda.
-                            --}}
-                            <div style="height: 350px; width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid #e9ecef;">
-                                <iframe
-                                    width="100%"
-                                    height="100%"
-                                    frameborder="0" style="border:0"
-                                    src="https://maps.google.com/maps?q={{ urlencode($order->city . ', ' . $order->province) }}&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                                    allowfullscreen
-                                    loading="lazy">
-                                </iframe>
-                            </div>
-                            <p class="text-muted mt-3 mb-0"><i class="fas fa-info-circle me-1"></i> Peta menunjukkan lokasi umum paket (berdasarkan kota/provinsi) atau pusat sortir terdekat. Detail akurat berada di Riwayat Pengiriman.</p>
-                        </div>
-                    </div>
+            <!-- Payment Summary Card -->
+            <div class="summary-card">
+                <div class="card-header">
+                    <i class="fas fa-receipt"></i>
+                    <h3>Ringkasan Pembayaran</h3>
                 </div>
 
-                {{-- KARTU STATUS SAAT INI DAN RESI --}}
-                <div class="card shadow-lg mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title mb-4 border-bottom pb-2">
-                            <i class="fas fa-truck-fast text-success me-2"></i> Status & Resi Pengiriman
-                        </h5>
-
-                        {{-- BLOK STATUS DAN LOKASI TERBARU --}}
-                        <div class="alert alert-{{ $order->status == 'Delivered' ? 'success' : ($order->status == 'Cancelled' ? 'danger' : ($order->tracking_no ? 'info' : 'warning')) }} d-flex flex-column p-4 mb-4 rounded-3 border-0">
-                            <div class="d-flex align-items-center mb-3">
-                                <i class="fas fa-box-open fa-2x me-3"></i>
-                                <div>
-                                    <small class="d-block text-uppercase">Status Global Saat Ini:</small>
-                                    <strong class="h3 mb-0 text-uppercase">{{ $order->status }}</strong>
-                                </div>
-                            </div>
-
-                            <hr class="my-2">
-
-                            {{-- LOGIKA LOKASI SAAT INI --}}
-                            @php
-                                $current_status = $order->status;
-                                $location_detail = 'Menunggu update dari sistem logistik.';
-                                $latest_step = collect($timeline)->filter(fn($step) => $step['completed'])->last();
-
-                                if ($latest_step) {
-                                    if ($current_status == 'Delivered') {
-                                        $location_detail = 'Telah diterima oleh **' . ($order->name ?? 'Penerima') . '** pada ' . \Carbon\Carbon::parse($order->delivered_date ?? $latest_step['time'])->format('d M Y H:i');
-                                    } elseif ($current_status == 'Processing' || $current_status == 'Shipped') {
-                                        $location_detail = 'Paket sedang dalam perjalanan / Transit';
-                                    } elseif ($current_status == 'Confirm') {
-                                        $location_detail = 'Paket siap dijemput kurir';
-                                    }
-                                }
-                                if ($current_status == 'Cancelled') {
-                                    $location_detail = 'Pesanan ini telah dibatalkan.';
-                                }
-                            @endphp
-
-                            <p class="mb-0 mt-2">
-                                <i class="fas fa-location-arrow me-2"></i> **Lokasi/Keterangan Terakhir:** {!! $location_detail !!}
-                            </p>
-                        </div>
-
-                        {{-- Nomor Resi --}}
-                        @if($order->tracking_no)
-                        <div class="alert alert-light border d-flex align-items-center mb-0 p-3 bg-light">
-                            <i class="fas fa-barcode fa-2x text-info me-3"></i>
-                            <div>
-                                <small class="d-block text-muted">Nomor Resi Tracking:</small>
-                                <strong class="h5 mb-0">{{ $order->tracking_no }}</strong>
-                            </div>
-                        </div>
-                        @else
-                        <div class="alert alert-warning p-3 mb-0">
-                            <i class="fas fa-exclamation-circle me-2"></i> Nomor resi belum tersedia, pesanan masih dalam proses persiapan.
-                        </div>
-                        @endif
+                <div class="summary-items">
+                    <div class="summary-item">
+                        <span>Subtotal Produk</span>
+                        <span>Rp {{ number_format($order->subtotal, 0, ',', '.') }}</span>
                     </div>
-                </div>
-
-                {{-- KARTU RIWAYAT PENGIRIMAN (TIMELINE) --}}
-                <div class="card shadow-lg mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title mb-4 border-bottom pb-2">
-                            <i class="fas fa-clock-rotate-left text-secondary me-2"></i> Riwayat Pengiriman (Timeline)
-                        </h5>
-
-                        <div class="timeline-tracking">
-                            @foreach($timeline as $step)
-                            <div class="timeline-item {{ $step['completed'] ? 'completed' : 'pending' }}">
-                                <div class="timeline-marker">
-                                    @if($step['completed'])
-                                        <i class="fas fa-check-circle"></i>
-                                    @else
-                                        <i class="fas fa-circle"></i>
-                                    @endif
-                                </div>
-                                <div class="timeline-content">
-                                    <h6 class="mb-1">{{ $step['label'] }}</h6>
-                                    @if($step['time'])
-                                        <small class="text-muted">
-                                            {{ \Carbon\Carbon::parse($step['time'])->format('d M Y, H:i') }} WIB
-                                        </small>
-                                    @else
-                                        <small class="text-muted">Menunggu...</small>
-                                    @endif
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-
-                        @if($order->status != 'Delivered' && $order->status != 'Cancelled')
-                        <div class="alert alert-info mt-4">
-                            <i class="fas fa-hourglass-half me-2"></i>
-                            <strong>Estimasi:</strong> Status akan diperbarui secara berkala oleh pihak logistik.
-                        </div>
-                        @endif
+                    <div class="summary-item discount">
+                        <span>Diskon Voucher</span>
+                        <span>- Rp {{ number_format($order->discount_amount ?? 0, 0, ',', '.') }}</span>
                     </div>
-                </div>
-
-                {{-- KARTU DETAIL PRODUK --}}
-                <div class="card shadow-lg mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title mb-4 border-bottom pb-2"><i class="fas fa-box me-2"></i> Detail Produk</h5>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <th>Produk</th>
-                                        <th class="text-end">Harga Satuan</th>
-                                        <th class="text-center">Qty</th>
-                                        <th class="text-end">Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($orderItem as $item)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="{{ asset($item->product->image ?? 'upload/no_image.jpg') }}"
-                                                     alt="{{ $item->product->name ?? 'Produk' }}"
-                                                     class="rounded me-3"
-                                                     style="width: 60px; height: 60px; object-fit: cover;">
-                                                <span>
-                                                    <strong>{{ $item->product->name ?? 'Nama Produk Tidak Ditemukan' }}</strong>
-                                                    @if($item->size || $item->color)
-                                                        <br><small class="text-muted">
-                                                            @if($item->size) Size: {{ $item->size }} @endif
-                                                            @if($item->color) Color: {{ $item->color }} @endif
-                                                        </small>
-                                                    @endif
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td class="text-end align-middle">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
-                                        <td class="text-center align-middle">{{ $item->qty }}</td>
-                                        <td class="text-end align-middle"><strong>Rp {{ number_format($item->price * $item->qty, 0, ',', '.') }}</strong></td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="summary-item">
+                        <span>Biaya Kirim</span>
+                        <span>Rp {{ number_format($order->shipping_charge ?? 0, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total Akhir</span>
+                        <span class="total-amount">Rp {{ number_format($order->amount, 0, ',', '.') }}</span>
                     </div>
                 </div>
             </div>
 
-            {{-- KOLOM KANAN (Ringkasan Pesanan & Penerima) --}}
-            <div class="col-lg-4">
-                <div class="card shadow-lg mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title mb-3 border-bottom pb-2"><i class="fas fa-file-invoice-dollar me-2"></i> Ringkasan Pembayaran</h5>
+            <!-- Recipient Info Card -->
+            <div class="recipient-card">
+                <div class="card-header">
+                    <i class="fas fa-user-check"></i>
+                    <h3>Informasi Penerima</h3>
+                </div>
 
-                        <ul class="list-group list-group-flush mb-4">
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Subtotal Produk:</span>
-                                <span>Rp {{ number_format($order->subtotal, 0, ',', '.') }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Diskon Voucher:</span>
-                                <span class="text-danger">- Rp {{ number_format($order->discount_amount ?? 0, 0, ',', '.') }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Biaya Kirim:</span>
-                                <span>Rp {{ number_format($order->shipping_charge ?? 0, 0, ',', '.') }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between bg-light">
-                                <strong>Total Akhir:</strong>
-                                <strong class="text-primary h4 mb-0">Rp {{ number_format($order->amount, 0, ',', '.') }}</strong>
-                            </li>
-                        </ul>
+                <div class="recipient-details">
+                    <div class="detail-group">
+                        <label>Nama Penerima</label>
+                        <p>{{ $order->name }}</p>
+                    </div>
+                    <div class="detail-group">
+                        <label>Telepon</label>
+                        <p>{{ $order->phone }}</p>
+                    </div>
+                    <div class="detail-group">
+                        <label>Email</label>
+                        <p>{{ $order->email }}</p>
+                    </div>
+                    <div class="detail-group">
+                        <label>Metode Pembayaran</label>
+                        <p class="payment-method">{{ $order->payment_method }}</p>
+                    </div>
+                    <div class="detail-group address">
+                        <label>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Alamat Pengiriman
+                        </label>
+                        <div class="address-box">
+                            {{ $order->address }}, {{ $order->district }}, {{ $order->city }}, {{ $order->province }}, {{ $order->post_code }}
+                        </div>
                     </div>
                 </div>
 
-                <div class="card shadow-lg mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title mb-3 border-bottom pb-2"><i class="fas fa-user-check me-2"></i> Informasi Penerima & Pembayaran</h5>
-
-                        <div class="d-flex flex-column mb-3">
-                            <small class="text-muted">Nama Penerima:</small>
-                            <div><strong>{{ $order->name }}</strong></div>
-                        </div>
-                        <div class="d-flex flex-column mb-3">
-                            <small class="text-muted">Telepon:</small>
-                            <div>{{ $order->phone }}</div>
-                        </div>
-                        <div class="d-flex flex-column mb-3">
-                            <small class="text-muted">Email:</small>
-                            <div>{{ $order->email }}</div>
-                        </div>
-                        <div class="d-flex flex-column mb-3">
-                            <small class="text-muted">Metode Pembayaran:</small>
-                            <div><strong class="text-info">{{ $order->payment_method }}</strong></div>
-                        </div>
-                        <div class="d-flex flex-column mb-3">
-                            <small class="text-muted">Alamat Lengkap:</small>
-                            <div class="alert alert-light p-2 mt-1 border-primary border-start border-4">
-                                {{ $order->address }}, {{ $order->district }}, {{ $order->city }}, {{ $order->province }}, {{ $order->post_code }}
-                            </div>
-                        </div>
-
-                        <div class="mt-4 d-grid gap-2">
-                            @if($order->status == 'Delivered')
-                            <a href="{{ route('user.invoice.download', $order->id) }}" class="btn btn-success btn-lg">
-                                <i class="fas fa-download me-1"></i> Download Invoice
-                            </a>
-                            @endif
-
-                            @if($order->status == 'Pending')
-                            <form action="{{ route('user.order.cancel', $order->id) }}"
-                                method="POST"
-                                onsubmit="return confirm('Yakin ingin membatalkan pesanan ini? Aksi ini tidak dapat diulang.')">
-                                @csrf
-                                <button type="submit" class="btn btn-danger btn-lg w-100">
-                                    <i class="fas fa-times me-1"></i> Batalkan Pesanan
-                                </button>
-                            </form>
-                            @endif
-
-                            <a href="{{ route('user.track.order') }}" class="btn btn-outline-secondary mt-2">
-                                <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar Pesanan
-                            </a>
-                        </div>
+                <div class="info-note">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Informasi Kue</strong>
+                        <p>Kue kering Rara Cookies dikirim dalam kondisi terbaik dengan kemasan khusus untuk menjaga kualitas dan kesegaran.</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                @if($order->status == 'Delivered')
+                <a href="{{ route('user.invoice.download', $order->id) }}" class="action-btn success">
+                    <i class="fas fa-download"></i>
+                    Download Invoice
+                </a>
+                @endif
+
+                @if($order->status == 'Pending')
+                <form action="{{ route('user.order.cancel', $order->id) }}"
+                    method="POST"
+                    onsubmit="return confirm('Yakin ingin membatalkan pesanan ini? Aksi ini tidak dapat diulang.')">
+                    @csrf
+                    <button type="submit" class="action-btn danger">
+                        <i class="fas fa-times"></i>
+                        Batalkan Pesanan
+                    </button>
+                </form>
+                @endif
             </div>
         </div>
     </div>
 </div>
 
+@push('styles')
 <style>
-/* CSS khusus untuk Timeline Tracking */
-.timeline-tracking {
-    position: relative;
-    padding-left: 30px;
-}
+    .order-detail-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-.timeline-tracking::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -19px;
-    width: 2px;
-    height: 100%;
-    background: #e0e0e0; /* Garis abu-abu untuk belum selesai */
-}
+    /* Header Styles */
+    .detail-header {
+        margin-bottom: 30px;
+    }
 
-.timeline-item {
-    position: relative;
-    padding-bottom: 30px;
-    padding-top: 5px; /* Sedikit padding atas agar marker tidak terlalu mepet */
-}
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
 
-.timeline-item:last-child {
-    padding-bottom: 0;
-}
+    .title-section .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
-/* Garis vertikal hijau untuk yang sudah selesai */
-.timeline-item.completed:not(:last-child)::before {
-    content: '';
-    position: absolute;
-    left: -19px;
-    top: 30px;
-    width: 2px;
-    height: calc(100% - 10px);
-    background: #4CAF50; /* Hijau */
-}
+    .page-title i {
+        color: #3b82f6;
+        font-size: 1.8rem;
+    }
 
-.timeline-marker {
-    position: absolute;
-    left: -30px;
-    top: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: #fff;
-    z-index: 2; /* Pastikan marker di atas garis */
-}
+    .invoice-number {
+        color: #6b7280;
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 600;
+    }
 
-.timeline-item.completed .timeline-marker {
-    color: #4CAF50;
-    font-size: 20px; /* Ukuran icon check */
-}
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f3f4f6;
+        color: #374151;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
 
-.timeline-item.pending .timeline-marker {
-    color: #ccc;
-    font-size: 10px; /* Ukuran icon circle */
-    border: 1px solid #ccc;
-}
+    .back-button:hover {
+        background: #e5e7eb;
+        color: #1f2937;
+        transform: translateX(-4px);
+    }
 
-.timeline-content h6 {
-    font-weight: 700;
-    color: #333;
-}
+    .breadcrumb-nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
 
-.timeline-item.pending .timeline-content h6 {
-    color: #999;
-}
-</style>
+    .breadcrumb-link {
+        color: #6b7280;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 0.2s;
+    }
 
-{{-- SCRIPT UNTUK MENDAPATKAN LOKASI GEOLOCATION PENGGUNA --}}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Memeriksa apakah browser mendukung Geolocation API
-    if (navigator.geolocation) {
-        console.log("Geolocation didukung. Meminta lokasi Anda...");
+    .breadcrumb-link:hover {
+        color: #3b82f6;
+    }
 
-        // Meminta lokasi pengguna
-        navigator.geolocation.getCurrentPosition(
-            // Callback Sukses
-            function(position) {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
+    .breadcrumb-separator {
+        color: #d1d5db;
+    }
 
-                console.log("Lokasi Anda berhasil didapatkan:");
-                console.log("Latitude:", latitude);
-                console.log("Longitude:", longitude);
+    .breadcrumb-current {
+        color: #3b82f6;
+        font-weight: 500;
+    }
 
-                // =============================================================
-                // TODO: GUNAKAN DATA INI UNTUK UPDATE PETA ATAU LOG
-                // =============================================================
+    /* Layout */
+    .detail-content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 24px;
+    }
 
-                // Contoh: Menampilkan pesan sukses di halaman
-                // Anda bisa menambahkan div kosong di atas dan mengisinya di sini
-                const locationDisplay = document.getElementById('user-location-info');
-                if (locationDisplay) {
-                    locationDisplay.innerHTML = `
-                        <div class="alert alert-success mt-3 mb-0">
-                            <i class="fas fa-location-dot me-2"></i>
-                            <strong>Posisi Anda:</strong> Lat: ${latitude.toFixed(6)}, Lon: ${longitude.toFixed(6)}
-                            <br><small class="text-success">Data ini diambil dari browser Anda.</small>
-                        </div>
-                    `;
+    /* Status Card */
+    .status-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+    }
 
-                    // Jika Anda ingin mengupdate iframe peta (menggunakan Google Maps)
-                    // Anda perlu membuat URL peta statis yang sesuai dengan koordinat ini.
-                    // Contoh update:
-                    const mapFrame = document.querySelector('iframe');
-                    if(mapFrame) {
-                        // Perhatian: Ini hanya contoh. Anda perlu memastikan URL peta Anda mendukung
-                        // koordinat ini dan memiliki API Key jika diperlukan.
-                        // mapFrame.src = `URL_PETA_DENGAN_KOORDINAT?lat=${latitude}&lon=${longitude}`;
-                    }
-                }
-            },
+    .status-hero {
+        padding: 40px 30px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
 
-            // Callback Error
-            function(error) {
-                let errorMessage = "Terjadi kesalahan saat mendapatkan lokasi.";
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        errorMessage = "Akses lokasi ditolak oleh pengguna.";
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        errorMessage = "Informasi lokasi tidak tersedia.";
-                        break;
-                    case error.TIMEOUT:
-                        errorMessage = "Permintaan lokasi habis waktu.";
-                        break;
-                    default:
-                        errorMessage = "Terjadi kesalahan yang tidak diketahui.";
-                        break;
-                }
-                console.error("Kesalahan Geolocation:", errorMessage);
+    .status-icon {
+        font-size: 3rem;
+        opacity: 0.9;
+    }
 
-                // Contoh: Menampilkan pesan error di halaman
-                const locationDisplay = document.getElementById('user-location-info');
-                if (locationDisplay) {
-                    locationDisplay.innerHTML = `
-                        <div class="alert alert-danger mt-3 mb-0">
-                            <i class="fas fa-times-circle me-2"></i>
-                            <strong>Gagal mendapatkan lokasi Anda:</strong> ${errorMessage}
-                        </div>
-                    `;
-                }
-            },
+    .status-info {
+        flex: 1;
+    }
 
-            // Opsi Tambahan (Opsional)
-            {
-                enableHighAccuracy: true,
-                timeout: 5000, // Maksimal 5 detik
-                maximumAge: 0
-            }
-        );
-    } else {
-        console.error("Geolocation tidak didukung oleh browser ini.");
-        const locationDisplay = document.getElementById('user-location-info');
-        if (locationDisplay) {
-            locationDisplay.innerHTML = `
-                <div class="alert alert-warning mt-3 mb-0">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    Browser Anda tidak mendukung fitur Geolocation.
-                </div>
-            `;
+    .status-label {
+        display: block;
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 8px;
+    }
+
+    .status-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        text-transform: uppercase;
+    }
+
+    .status-details {
+        padding: 30px;
+    }
+
+    .detail-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        color: #4b5563;
+    }
+
+    .detail-item i {
+        color: #3b82f6;
+        font-size: 1.2rem;
+        margin-top: 2px;
+    }
+
+    .detail-item p {
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .tracking-info {
+        background: #f0f9ff;
+        border: 2px solid #3b82f6;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .tracking-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #1e40af;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .tracking-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 8px;
+    }
+
+    .tracking-hint {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #60a5fa;
+        font-size: 0.85rem;
+    }
+
+    .no-tracking-info {
+        background: #fef3c7;
+        border: 2px solid #f59e0b;
+        border-radius: 12px;
+        padding: 16px;
+        color: #92400e;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    /* Timeline Card */
+    .timeline-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #f3f4f6;
+    }
+
+    .card-header i {
+        color: #3b82f6;
+        font-size: 1.3rem;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .timeline-container {
+        position: relative;
+    }
+
+    .timeline-step {
+        display: flex;
+        gap: 20px;
+        position: relative;
+    }
+
+    .timeline-marker {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+
+    .marker-dot {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        flex-shrink: 0;
+    }
+
+    .timeline-step.completed .marker-dot {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .timeline-step.pending .marker-dot {
+        background: #f3f4f6;
+        border: 3px solid #e5e7eb;
+    }
+
+    .dot-empty {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #d1d5db;
+    }
+
+    .marker-line {
+        width: 3px;
+        height: calc(100% + 20px);
+        position: absolute;
+        top: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .timeline-step.completed .marker-line {
+        background: linear-gradient(180deg, #10b981, #e5e7eb);
+    }
+
+    .timeline-step.pending .marker-line {
+        background: #e5e7eb;
+    }
+
+    .timeline-content {
+        flex: 1;
+        padding-bottom: 32px;
+    }
+
+    .timeline-content h4 {
+        margin: 0 0 8px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .timeline-step.pending .timeline-content h4 {
+        color: #9ca3af;
+    }
+
+    .timeline-time {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #6b7280;
+        font-size: 0.9rem;
+    }
+
+    .timeline-time.pending {
+        color: #9ca3af;
+        font-style: italic;
+    }
+
+    .timeline-info {
+        background: #f0f9ff;
+        border-left: 4px solid #3b82f6;
+        padding: 16px;
+        border-radius: 8px;
+        color: #1e40af;
+        font-size: 0.9rem;
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Products Card */
+    .products-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .products-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .product-item {
+        display: flex;
+        gap: 16px;
+        padding: 16px;
+        background: #f9fafb;
+        border-radius: 12px;
+        transition: all 0.3s;
+    }
+
+    .product-item:hover {
+        background: #f3f4f6;
+    }
+
+    .product-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-info {
+        flex: 1;
+    }
+
+    .product-info h4 {
+        margin: 0 0 6px 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .product-variant {
+        color: #6b7280;
+        font-size: 0.85rem;
+        margin: 0 0 8px 0;
+    }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+
+    .price-label {
+        color: #059669;
+        font-weight: 600;
+    }
+
+    .quantity {
+        color: #6b7280;
+    }
+
+    .product-total {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        align-self: center;
+    }
+
+    /* Summary Card */
+    .summary-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+    }
+
+    .summary-items {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #4b5563;
+    }
+
+    .summary-item.discount {
+        color: #ef4444;
+    }
+
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 16px;
+        border-top: 2px solid #f3f4f6;
+        margin-top: 8px;
+    }
+
+    .summary-total span:first-child {
+        font-weight: 600;
+        color: #1a1a1a;
+        font-size: 1.1rem;
+    }
+
+    .total-amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #3b82f6;
+    }
+
+    /* Recipient Card */
+    .recipient-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+    }
+
+    .recipient-details {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .detail-group label {
+        display: block;
+        color: #6b7280;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+
+    .detail-group p {
+        margin: 0;
+        color: #1a1a1a;
+        font-weight: 500;
+    }
+
+    .payment-method {
+        color: #3b82f6 !important;
+        font-weight: 600 !important;
+    }
+
+    .detail-group.address label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .detail-group.address i {
+        color: #ef4444;
+    }
+
+    .address-box {
+        background: #f0f9ff;
+        border-left: 4px solid #3b82f6;
+        padding: 16px;
+        border-radius: 8px;
+        color: #1e40af;
+        line-height: 1.6;
+    }
+
+    .info-note {
+        background: #f0fdf4;
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .info-note i {
+        color: #10b981;
+        font-size: 1.2rem;
+        margin-top: 2px;
+    }
+
+    .info-note strong {
+        display: block;
+        color: #065f46;
+        margin-bottom: 4px;
+    }
+
+    .info-note p {
+        margin: 0;
+        color: #047857;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px 24px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+    }
+
+    .action-btn.success {
+        background: #10b981;
+        color: white;
+    }
+
+    .action-btn.success:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .action-btn.danger {
+        background: #ef4444;
+        color: white;
+    }
+
+    .action-btn.danger:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .detail-content {
+            grid-template-columns: 1fr;
         }
     }
-});
-</script>
+
+    @media (max-width: 768px) {
+        .order-detail-container {
+            padding: 15px;
+        }
+
+        .header-top {
+            flex-direction: column;
+        }
+
+        .page-title {
+            font-size: 1.5rem !important;
+        }
+
+        .status-hero {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .status-value {
+            font-size: 2rem !important;
+        }
+
+        .product-item {
+            flex-direction: column;
+        }
+
+        .product-total {
+            align-self: flex-start;
+        }
+    }
+</style>
+@endpush
 
 @endsection

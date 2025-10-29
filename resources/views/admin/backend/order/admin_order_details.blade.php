@@ -115,11 +115,11 @@
                                                 <a href="{{ route('pending_to_confirm', $order->id) }}" class="btn btn-success w-100" id="confirmOrder">
                                                     Konfirmasi Pesanan
                                                 </a>
-                                            @elseif ($order->status == 'confirm')
+                                            @elseif ($order->status == 'Confirm')
                                                 <a href="{{ route('confirm_to_processing', $order->id) }}" class="btn btn-primary w-100" id="processingOrder">
                                                     Pesanan Diproses
                                                 </a>
-                                            @elseif ($order->status == 'processing')
+                                            @elseif ($order->status == 'Processing')
                                                 <a href="{{ route('processing_to_delivered', $order->id) }}" class="btn btn-success w-100" id="deliveredOrder">
                                                     Pesanan Dikirim
                                                 </a>

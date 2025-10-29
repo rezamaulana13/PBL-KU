@@ -60,7 +60,7 @@
                     <i class="fas fa-box-open fa-6x text-muted mb-4"></i>
                     <h5 class="text-dark fw-bold mb-2">Daftar Favorit Anda Kosong!</h5>
                     <p class="text-muted fs-6 mb-4">Sepertinya Anda belum menyukai apa pun. Tambahkan item favorit Anda sekarang!</p>
-                    <a href="{{ route('home') }}" class="btn btn-primary btn-lg shadow-sm">
+                    <a href="{{ route('index') }}" class="btn btn-primary btn-lg shadow-sm">
                         <i class="fas fa-search me-2"></i> Mulai Jelajahi Produk Terbaik
                     </a>
                 </div>
